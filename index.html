@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dossiê Sunset — Grupo Ragga</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:14px;background:#F3F0FA;font-family:'Inter',Arial,sans-serif;color:#2D204E;font-size:13px}
+b,strong{font-weight:700}
+.crono-btn{background:#2D204E;color:#fff;border:none;border-radius:9px;padding:8px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.crono-btn:hover{background:#3B2758}
+.crono-btn.pdf{background:#fff;color:#2D204E;border:1.5px solid #2D204E}
+.crono-btn.pdf:hover{background:#F1EDFA}
+.ds-wrap{background:#fff;border:1px solid #E5E0F0;border-radius:16px;max-width:1200px;margin:14px auto;padding:18px 20px}
+.ds-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.ds-h1{font-family:'Fraunces',serif;font-weight:700;font-size:17px;color:#2D204E}
+.ds-sub{font-size:11px;color:#8B84A0;margin-top:2px}
+.ds-btns{display:flex;gap:8px}
+.ds-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0 6px}
+.ds-card{background:#F7F4FD;border-radius:12px;padding:10px 12px}
+.ds-ci{font-size:17px}
+.ds-cl{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#8B84A0;margin-top:2px}
+.ds-cv{font-size:16px;font-weight:800;color:#2D204E;margin-top:2px}
+.ds-cs{font-size:9.5px;color:#8B84A0;margin-top:2px}
+.ds-sec{margin-top:18px;padding:12px;border-radius:14px;background:#F7F4FD;border:1px solid #EFEAF8}
+.ds-sec.mall{background:#FFF8EC;border-color:#F3E0BC}
+.ds-sec.terr{background:#ECF8F6;border-color:#CBE9E3}
+.ds-sec.pts{background:#F3F0FA}
+.ds-sec .ds-card{background:#fff;border:1px solid rgba(45,32,78,.08)}
+.ds-sec.mall .ds-t th{background:#B45309}
+.ds-sec.terr .ds-t th{background:#0D9488}
+.ds-sec .ds-t td{background:#fff}
+.ds-st{display:block;font-family:'Fraunces',serif;font-weight:700;font-size:13.5px;color:#fff;background:#7B4FBF;padding:8px 12px;border-radius:9px;margin-bottom:10px}
+.ds-st small{color:#E4DCF5}
+.ds-st.mall{background:#D97706}
+.ds-st.terr{background:#0D9488}
+.ds-t{border-collapse:collapse;width:100%;font-size:11.5px}
+.ds-t th{background:#2D204E;color:#fff;padding:6px 9px;text-align:left;font-size:10.5px}
+.ds-t td{border-bottom:1px solid #EFEAF8;padding:5px 9px;vertical-align:top;color:#2D204E}
+.ds-t td.k{font-weight:700;color:#7B4FBF;width:220px}
+.ds-t .r{text-align:right;white-space:nowrap;font-weight:600}
+.ds-t tr.sm td{background:#FFF8EC;font-weight:700}
+.ds-t tr.tot td{background:#F1EDFA;font-weight:700}
+.ds-t tr.gt td{background:#2D204E;color:#fff;font-weight:800}
+.ds-t tr.sep td{background:#F7F4FD;font-weight:800;color:#7B4FBF;font-size:10px;letter-spacing:.04em}
+.ds-t td.ok{color:#1A9F4A;font-weight:700}
+.ds-t td.warn{color:#C77700;font-weight:700}
+.ds-t td.ds-lk{cursor:pointer;color:#7B4FBF;font-weight:700}
+.ds-t td.ds-lk:hover{text-decoration:underline}
+.ds-lote{margin-bottom:12px}
+.ds-lt{font-weight:800;font-size:12.5px;color:#2D204E}
+.ds-ls{font-size:10.5px;color:#8B84A0;margin:1px 0 4px}
+.ds-note{background:#F7F4FD;border-left:3px solid #7B4FBF;padding:8px 10px;border-radius:8px;font-size:11px;color:#6B6480;line-height:1.55;margin-top:8px}
+.ds-ul{margin:0;padding-left:20px;font-size:11.5px;color:#2D204E;line-height:1.8}
+.ds-gh{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#fff;background:#7B4FBF;text-transform:uppercase;margin:16px 0 8px;padding:7px 12px;border-radius:9px}
+.ds-gh.mall{background:#D97706}
+.ds-gh.terr{background:#0D9488}
+.ds-cards.mini{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.ds-cards.mini .ds-cv{font-size:14px}
+.ds-pj{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:10px;margin-top:8px}
+.ds-card.pj{background:#fff;border:1px solid #E5E0F0}
+.ds-card.pj:hover{background:#F7F4FD}
+.ds-card.pj.sm{background:#FFF8EC;border-color:rgba(217,119,6,.35)}
+.ds-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.ds-chip{background:#F7F4FD;border:1px solid #E5E0F0;border-radius:99px;padding:2px 8px;font-size:9.5px;color:#6B6480;white-space:nowrap}
+.ds-chip b{color:#2D204E}
+.ds-chip.est{border-style:dashed;color:#8B84A0;white-space:normal}
+.ds-chip.warn{background:#FFF4E0;color:#C77700;border-color:rgba(217,119,6,.35)}
+@media(max-width:700px){.ds-cards{grid-template-columns:1fr 1fr}.ds-t td.k{width:auto}
+.ds-wrap{margin:0 auto}
+@media print{body{background:#fff;padding:0}.ds-btns{display:none}.ds-wrap{border:none}.ds-sec{page-break-inside:avoid}.ds-lote{page-break-inside:avoid}}
+</style></head><body>
+<div class="ds-wrap"><div class="ds-head"><div><div class="ds-h1">📁 Dossiê Sunset — Reunião Sr. Antônio</div><div class="ds-sub">Grupo Ragga · atualizado 21/09/2026 · CAPEX de obras + terrenos Sunset Dream + contrato do Mall + gastos já realizados</div></div><div class="ds-btns"><button class="crono-btn" onclick="window.print()">🖨 Imprimir / Salvar PDF</button><button class="crono-btn pdf" onclick="dossieExtrato()">📎 Extrato contas (Excel)</button><button class="crono-btn pdf" onclick="dossieCopy()">📋 Copiar roteiro (WhatsApp)</button></div></div><div class="ds-gh">💰 CAPEX — o que preciso</div><div class="ds-cards"><div class="ds-card"><div class="ds-ci">💰</div><div class="ds-cl">CAPEX total das obras</div><div class="ds-cv">R$ 5.490.000</div><div class="ds-cs">10 projetos de expansão</div></div><div class="ds-card"><div class="ds-ci">🏬</div><div class="ds-cl">Sunset Mall (Churrasc. + Farmelhor)</div><div class="ds-cv">R$ 2.064.000</div><div class="ds-cs">o que precisa p/ abrir no Mall</div></div></div><div class="ds-gh mall">🏗 Sunset Mall — já investido · contrato</div><div class="ds-cards"><div class="ds-card"><div class="ds-ci">✅</div><div class="ds-cl">Obra do Mall — pago</div><div class="ds-cv">R$ 86.384,81</div><div class="ds-cs">contas quitadas até 21/09</div></div><div class="ds-card"><div class="ds-ci">💳</div><div class="ds-cl">Obra — já comprometido</div><div class="ds-cv">R$ 160.547,59</div><div class="ds-cs">parcelas a vencer até mar/27 · ⚠ conferir LOGG 2×</div></div><div class="ds-card"><div class="ds-ci">📐</div><div class="ds-cl">Projeto arquitetônico (est.)</div><div class="ds-cv">R$ 139.326,00</div><div class="ds-cs">2.111 m² × R$ 66/m² ⚠ confirmar c/ Ivan</div></div><div class="ds-card"><div class="ds-ci">🏠</div><div class="ds-cl">Adiantamento de aluguel</div><div class="ds-cv">R$ 120.000,00</div><div class="ds-cs">previsto no contrato (pág. 2) · 1ª parc. 13/01/24 · ⚠ sem histórico localizado — verificando</div></div></div><div class="ds-gh terr">🏞 Terrenos Sunset Dream — 3 lotes</div><div class="ds-cards"><div class="ds-card"><div class="ds-ci">🟢</div><div class="ds-cl">Pago (aprox.)</div><div class="ds-cv">R$ 699.975,35</div><div class="ds-cs">L19 <b>R$ 350.128,25</b> · parc. 25/92<br>QA-L01 <b>R$ 164.999,12</b> · parc. 030/100<br>QB-L01 <b>R$ 184.847,98</b> · parc. 030/100</div></div><div class="ds-card"><div class="ds-ci">🔴</div><div class="ds-cl">Em atraso — balões 14/04/26</div><div class="ds-cv">R$ 108.010,98</div><div class="ds-cs">QA-L01 <b>R$ 54.005,49</b> · não pago<br>QB-L01 <b>R$ 54.005,49</b> · não pago<br>valor cheio</div></div><div class="ds-card"><div class="ds-ci">🟣</div><div class="ds-cl">A vencer (01/10/26 →)</div><div class="ds-cv">R$ 2.206.608,07</div><div class="ds-cs">L19 <b>R$ 825.018,57</b><br>QA-L01 <b>R$ 661.975,40</b><br>QB-L01 <b>R$ 719.614,10</b></div></div><div class="ds-card"><div class="ds-ci">Σ</div><div class="ds-cl">Saldo devedor pelo critério</div><div class="ds-cv">R$ 2.314.619,05</div><div class="ds-cs">em atraso + a vencer · sem reajustes futuros</div></div></div><div class="ds-sec"><div class="ds-st">1️⃣ CAPEX por obra — quanto precisa em cada projeto <small>· 📥 clique no bloco para baixar o orçamento completo em Excel</small></div><div class="ds-pj"><div class="ds-card pj"><div class="ds-cl">Rolândia (Biggs + Isaías)</div><div class="ds-cv">R$ 600.000</div><div class="ds-chips"><span class="ds-chip est">estimativa — sem orçamento detalhado ainda</span></div></div><div class="ds-card pj"><div class="ds-cl">Ibiporã (Biggs + Isaías)</div><div class="ds-cv">R$ 600.000</div><div class="ds-chips"><span class="ds-chip est">estimativa — sem orçamento detalhado ainda</span></div></div><div class="ds-card pj"><div class="ds-cl">Ivaiporã (Várias Praças)</div><div class="ds-cv">R$ 600.000</div><div class="ds-chips"><span class="ds-chip est">estimativa — sem orçamento detalhado ainda</span></div></div><div class="ds-card pj" onclick="dossieOrc('milano')" style="cursor:pointer" title="Baixar orçamento completo (Excel)"><div class="ds-cl">Mangaba – Interlagos (Biggs Milano) 📥</div><div class="ds-cv">R$ 154.000</div><div class="ds-chips"><span class="ds-chip">Serviços <b>R$ 82.270</b></span><span class="ds-chip">Equipamentos <b>R$ 71.988</b></span></div></div><div class="ds-card pj sm" onclick="dossieOrc('matuza')" style="cursor:pointer" title="Baixar orçamento completo (Excel)"><div class="ds-cl">🏬 Sunset Churrascaria 📥</div><div class="ds-cv">R$ 1.328.000</div><div class="ds-chips"><span class="ds-chip">Equipamentos Oper. <b>R$ 424.803</b></span><span class="ds-chip">Itens Estratégicos & Serviços <b>R$ 385.950</b></span><span class="ds-chip">Climatização <b>R$ 230.300</b></span><span class="ds-chip">Obra Civil (fechamento) <b>R$ 200.562</b></span><span class="ds-chip">Já Pago <b>R$ 86.385</b></span></div></div><div class="ds-card pj sm" onclick="dossieOrc('farmelhor')" style="cursor:pointer" title="Baixar orçamento completo (Excel)"><div class="ds-cl">🏬 Farmelhor 📥</div><div class="ds-cv">R$ 736.000</div><div class="ds-chips"><span class="ds-chip">Insumos Iniciais <b>R$ 500.000</b></span><span class="ds-chip">Mobiliário <b>R$ 175.679</b></span><span class="ds-chip">Com. Visual <b>R$ 25.000</b></span><span class="ds-chip">Climatização <b>R$ 23.600</b></span><span class="ds-chip">Tecnologia <b>R$ 11.840</b></span></div></div><div class="ds-card pj" onclick="dossieOrc('galileu02')" style="cursor:pointer" title="Baixar orçamento completo (Excel)"><div class="ds-cl">Galileu – Zona Sul 📥</div><div class="ds-cv">R$ 254.000</div><div class="ds-chips"><span class="ds-chip">Equipamentos <b>R$ 120.340</b></span><span class="ds-chip">Obra e Serviços <b>R$ 83.822</b></span><span class="ds-chip">Insumos Iniciais <b>R$ 50.000</b></span></div></div><div class="ds-card pj" onclick="dossieOrc('galileu01')" style="cursor:pointer" title="Baixar orçamento completo (Excel)"><div class="ds-cl">Galileu – Leonor 📥</div><div class="ds-cv">R$ 389.000</div><div class="ds-chips"><span class="ds-chip">Equipamentos <b>R$ 207.092</b></span><span class="ds-chip">Obra e Serviços <b>R$ 132.700</b></span><span class="ds-chip">Insumos Iniciais <b>R$ 50.000</b></span></div></div><div class="ds-card pj" onclick="dossieOrc('galileu03')" style="cursor:pointer" title="Baixar orçamento completo (Excel)"><div class="ds-cl">Galileu – Vila Casoni 📥</div><div class="ds-cv">R$ 373.000</div><div class="ds-chips"><span class="ds-chip">Equipamentos <b>R$ 172.918</b></span><span class="ds-chip">Obra e Serviços <b>R$ 150.638</b></span><span class="ds-chip">Insumos Iniciais <b>R$ 50.000</b></span></div></div><div class="ds-card pj" onclick="dossieOrc('galileu04')" style="cursor:pointer" title="Baixar orçamento completo (Excel)"><div class="ds-cl">Galileu – Vasco da Gama 📥</div><div class="ds-cv">R$ 456.000</div><div class="ds-chips"><span class="ds-chip">Obra e Serviços <b>R$ 238.119</b></span><span class="ds-chip">Equipamentos <b>R$ 168.318</b></span><span class="ds-chip">Insumos Iniciais <b>R$ 50.000</b></span></div></div></div><div class="ds-cards" style="margin-top:10px"><div class="ds-card"><div class="ds-ci">🏬</div><div class="ds-cl">Subtotal Sunset Mall</div><div class="ds-cv">R$ 2.064.000</div><div class="ds-cs">Churrascaria + Farmelhor</div></div><div class="ds-card"><div class="ds-ci">💰</div><div class="ds-cl">CAPEX TOTAL</div><div class="ds-cv">R$ 5.490.000</div><div class="ds-cs">10 projetos de expansão</div></div></div></div><div class="ds-sec mall"><div class="ds-st mall">2️⃣ Contrato de locação — Mall Sunset (supermercado)</div><div class="ds-cards"><div class="ds-card"><div class="ds-ci">✍️</div><div class="ds-cl">Assinatura do contrato</div><div class="ds-cv">14/11/2023</div><div class="ds-cs">obra 100% custeada pela LOCADORA como condição da locação</div></div><div class="ds-card"><div class="ds-ci">⏳</div><div class="ds-cl">Prazo</div><div class="ds-cv">5 anos (60 meses)</div><div class="ds-cs">conta a partir da ENTREGA da obra · carência de 60 dias</div></div><div class="ds-card"><div class="ds-ci">🏠</div><div class="ds-cl">Aluguel</div><div class="ds-cv">R$ 25.000 → R$ 35.000</div><div class="ds-cs">25k nos 12 primeiros meses · 35k do 13º em diante · IGP-M</div></div><div class="ds-card"><div class="ds-ci">💵</div><div class="ds-cl">Adiantamento de aluguel</div><div class="ds-cv">R$ 120.000</div><div class="ds-cs">pág. 2 do contrato · 1ª parc. 13/01/24 · abatível nos 60 aluguéis · ⚠ confirmar se foi pago</div></div><div class="ds-card"><div class="ds-ci">📄</div><div class="ds-cl">Objeto</div><div class="ds-cv">2.111 m²</div><div class="ds-cs">supermercado / restaurante / varejo · Lote 03, Q.I, Sunset Dream (matr. 133.064)</div></div><div class="ds-card"><div class="ds-ci">🤝</div><div class="ds-cl">Partes</div><div class="ds-cv">Super Nova × Serbase</div><div class="ds-cs">fiador: Luiz Otávio (garantia real: lote Sun Lake, matr. 60.686)</div></div><div class="ds-card"><div class="ds-ci">⚠️</div><div class="ds-cl">Entrega prometida</div><div class="ds-cv">1 ano (verbal)</div><div class="ds-cs">~22 meses sem entrega → cronograma do grupo remanejado</div></div></div></div><div class="ds-sec terr"><div class="ds-st terr">3️⃣ Os 3 terrenos — Sunset Dream</div><div class="ds-cards" style="margin:8px 0 10px"><div class="ds-card"><div class="ds-ci">✍️</div><div class="ds-cl">Contratos QA-L01 e QB-L01</div><div class="ds-cv">14/11/2023</div><div class="ds-cs">assinados no CPF Luiz Otávio — há ~22 meses · mesma data do contrato do Mall</div></div><div class="ds-card"><div class="ds-ci">📜</div><div class="ds-cl">Escritura — Lote 19</div><div class="ds-cv">13/11/2024</div><div class="ds-cs">compra e venda c/ alienação fiduciária · CPF Luiz Otávio</div></div><div class="ds-card"><div class="ds-ci">🔁</div><div class="ds-cl">Cessão à MANPA</div><div class="ds-cv">15/12/2025</div><div class="ds-cs">QA-L01 e QB-L01 assumidos a partir da parcela 21/100</div></div></div><div class="ds-lote"><div class="ds-lt">Lote 19 – Quadra B · Sunset Dream Residence</div><div class="ds-ls">530,62 m² · CPF Luiz Otávio · Escritura 13/11/2024 · IGP-M sem deflação + juros 12% a.a.</div><div class="ds-cards mini"><div class="ds-card"><div class="ds-ci">💵</div><div class="ds-cl">Preço do imóvel</div><div class="ds-cv">R$ 948.111,82</div><div class="ds-cs">entrada R$ 127.000 (distrato QA-L10, 30/08/24) · saldo R$ 821.111,82 em 92× R$ 8.925,13 (13/09/24 → 13/05/32)</div></div><div class="ds-card"><div class="ds-ci">🟢</div><div class="ds-cl">Pago até hoje (conforme contrato)</div><div class="ds-cv">R$ 350.128,25</div><div class="ds-cs">entrada R$ 127.000 (distrato QA-L10) + 25 mensais × R$ 8.925,13 = R$ 223.128,25 · nominal do contrato — com reajustes IGP-M o desembolso real foi maior (parcela atual R$ 12.313,71)</div></div><div class="ds-card"><div class="ds-ci">📍</div><div class="ds-cl">Parcela em que estou</div><div class="ds-cv">25ª de 92</div><div class="ds-cs">set/26 paga · próxima 13/10/26 · parcela atual R$ 12.313,71</div></div><div class="ds-card"><div class="ds-ci">⚪</div><div class="ds-cl">Em atraso</div><div class="ds-cv">—</div><div class="ds-cs">sem balões de 14/04 neste lote</div></div><div class="ds-card"><div class="ds-ci">🟣</div><div class="ds-cl">A vencer (01/10/26 →)</div><div class="ds-cv">R$ 825.018,57</div><div class="ds-cs">67× R$ 12.313,71 · out/26 → abr/32 · sem reajustes futuros</div></div><div class="ds-card"><div class="ds-ci">Σ</div><div class="ds-cl">Saldo devedor pelo critério</div><div class="ds-cv">R$ 825.018,57</div><div class="ds-cs">saldo contábil anterior ≈ R$ 894.034,62 (IGP-M)</div></div></div></div><div class="ds-lote"><div class="ds-lt">Lote 01 – Quadra A · Sunset Dream</div><div class="ds-ls">448,61 m² · contrato 14/11/2023 (CPF) → cedido à MANPA em 15/12/2025 · IGP-M + 12% a.a. · prazo até 14/04/2034</div><div class="ds-cards mini"><div class="ds-card"><div class="ds-ci">💵</div><div class="ds-cl">Preço do imóvel</div><div class="ds-cv">R$ 801.666,00</div><div class="ds-cs">entradas R$ 67.000 · saldo na cessão (15/12/25): R$ 704.432 — 80× R$ 2.689,15 + balão R$ 39.300 + 8 balões anuais R$ 56.250</div></div><div class="ds-card"><div class="ds-ci">🟢</div><div class="ds-cl">Pago até hoje (aprox.)</div><div class="ds-cv">R$ 164.999,12</div><div class="ds-cs">entradas R$ 67.000 + 20 mensais CPF R$ 44.073,20 + balão 04/25 R$ 25.000 + 10 mensais MANPA R$ 28.925,92</div></div><div class="ds-card"><div class="ds-ci">📍</div><div class="ds-cl">Parcela em que estou</div><div class="ds-cv">030ª de 100</div><div class="ds-cs">set/26 paga · próxima 031 em 14/10/26 · mensal atual R$ 3.028,22</div></div><div class="ds-card"><div class="ds-ci">🔴</div><div class="ds-cl">EM ATRASO — balão 14/04/26</div><div class="ds-cv">R$ 54.005,49</div><div class="ds-cs">valor cheio · NÃO PAGO</div></div><div class="ds-card"><div class="ds-ci">🟣</div><div class="ds-cl">A vencer (01/10/26 →)</div><div class="ds-cv">R$ 661.975,40</div><div class="ds-cs">70× R$ 3.028,22 (R$ 211.975,40) + 8 balões anuais de R$ 56.250 (R$ 450.000)</div></div><div class="ds-card"><div class="ds-ci">Σ</div><div class="ds-cl">Saldo devedor pelo critério</div><div class="ds-cv">R$ 715.980,89</div><div class="ds-cs">atraso + a vencer · sem reajustes futuros</div></div></div></div><div class="ds-lote"><div class="ds-lt">Lote 01 – Quadra B · Sunset Dream</div><div class="ds-ls">482,14 m² · contrato 14/11/2023 (CPF) → cedido à MANPA em 15/12/2025 · IGP-M + 12% a.a. · prazo até 14/04/2034</div><div class="ds-cards mini"><div class="ds-card"><div class="ds-ci">💵</div><div class="ds-cl">Preço do imóvel</div><div class="ds-cv">R$ 861.584,00</div><div class="ds-cs">entradas R$ 67.000 · saldo na cessão (15/12/25): R$ 762.928 — 80× R$ 3.420,35 + balão R$ 39.300 + 8 balões anuais R$ 56.250</div></div><div class="ds-card"><div class="ds-ci">🟢</div><div class="ds-cl">Pago até hoje (aprox.)</div><div class="ds-cv">R$ 184.847,98</div><div class="ds-cs">entradas R$ 67.000 + 20 mensais CPF R$ 56.056,80 + balão 04/25 R$ 25.000 + 10 mensais MANPA R$ 36.791,18</div></div><div class="ds-card"><div class="ds-ci">📍</div><div class="ds-cl">Parcela em que estou</div><div class="ds-cv">030ª de 100</div><div class="ds-cs">set/26 paga · próxima 031 em 14/10/26 · mensal atual R$ 3.851,63</div></div><div class="ds-card"><div class="ds-ci">🔴</div><div class="ds-cl">EM ATRASO — balão 14/04/26</div><div class="ds-cv">R$ 54.005,49</div><div class="ds-cs">valor cheio · NÃO PAGO</div></div><div class="ds-card"><div class="ds-ci">🟣</div><div class="ds-cl">A vencer (01/10/26 →)</div><div class="ds-cv">R$ 719.614,10</div><div class="ds-cs">70× R$ 3.851,63 (R$ 269.614,10) + 8 balões anuais de R$ 56.250 (R$ 450.000)</div></div><div class="ds-card"><div class="ds-ci">Σ</div><div class="ds-cl">Saldo devedor pelo critério</div><div class="ds-cv">R$ 773.619,59</div><div class="ds-cs">atraso + a vencer · sem reajustes futuros</div></div></div></div><div class="ds-note"><strong>Critério (definido 21/09):</strong> mensais consideradas em dia até set/26; <strong>em atraso apenas os balões de 14/04/2026</strong> (R$ 54.005,49 × 2, valor cheio, não pagos) = <strong>R$ 108.010,98</strong>; a vencer conta de <strong>01/10/2026 em diante</strong> nos valores atuais dos carnês (sem projetar IGP-M) = <strong>R$ 2.206.608,07</strong>. Σ Saldo devedor dos 3 terrenos pelo critério: <strong>R$ 2.314.619,05</strong>.</div></div><div class="ds-sec mall"><div class="ds-st mall">4️⃣ Já gasto na obra — Matuza · Sunset Mall (contas a pagar)</div><table class="ds-t"><tr><th>Detalhamento</th><th>Parc.</th><th>Venc.</th><th class="r">Valor</th><th>Status</th></tr><tr><td>Piso da cozinha — Cerâmica Atlas</td><td>Entrada</td><td>14/07/26</td><td class="r">R$ 6.294,63</td><td class="ok">PAGO</td></tr><tr><td>Piso da cozinha — Cerâmica Atlas</td><td>1/2</td><td>06/08/26</td><td class="r">R$ 6.123,20</td><td class="ok">PAGO</td></tr><tr><td>Piso da cozinha — Cerâmica Atlas</td><td>2/2</td><td>03/09/26</td><td class="r">R$ 6.125,03</td><td class="ok">PAGO</td></tr><tr><td>Frete do piso — BTR Logística</td><td>Único</td><td>10/07/26</td><td class="r">R$ 880,00</td><td class="ok">PAGO</td></tr><tr><td>Revestimento — diferença do piso (HF Urbanismo)</td><td>Único</td><td>16/07/26</td><td class="r">R$ 2.657,44</td><td class="ok">PAGO</td></tr><tr><td>Paisagismo — árvores externas (Indoor)</td><td>1/4</td><td>11/08/26</td><td class="r">R$ 5.049,43</td><td class="ok">PAGO</td></tr><tr><td>Paisagismo — árvores externas (Indoor)</td><td>2/4</td><td>10/09/26</td><td class="r">R$ 5.046,75</td><td class="ok">PAGO</td></tr><tr><td>Rede e CFTV — MO (JK Telecom)</td><td>Entrada</td><td>19/08/26</td><td class="r">R$ 6.300,00</td><td class="ok">PAGO</td></tr><tr><td>Rede e CFTV — saldo MO (JK Telecom)</td><td>1/4</td><td>19/09/26</td><td class="r">R$ 2.925,00</td><td class="ok">PAGO</td></tr><tr><td>2 climatizadores KS23 cozinha (Rofer)</td><td>Entrada</td><td>28/08/26</td><td class="r">R$ 10.000,00</td><td class="ok">PAGO</td></tr><tr><td>Climatização salão/adm/kids — infra 12 cassete + 3 split (Superar)</td><td>1/7</td><td>26/08/26</td><td class="r">R$ 10.000,00</td><td class="ok">PAGO</td></tr><tr><td>Climatização salão/adm/kids (Superar)</td><td>2/7</td><td>02/09/26</td><td class="r">R$ 10.000,00</td><td class="ok">PAGO</td></tr><tr><td>Testeira estrutura metálica — entrada (Rovano)</td><td>Entrada</td><td>26/08/26</td><td class="r">R$ 6.500,00</td><td class="ok">PAGO</td></tr><tr><td>Cabeamento do som (Zanin)</td><td>Entrada</td><td>27/08/26</td><td class="r">R$ 2.925,15</td><td class="ok">PAGO</td></tr><tr><td>Material rede/CFTV (Multcabos)</td><td>Único</td><td>21/09/26</td><td class="r">R$ 1.311,37</td><td class="ok">PAGO</td></tr><tr><td>Iluminação praça e salões — LED (LOGG/Ehlo)</td><td>Entrada</td><td>16/09/26</td><td class="r">R$ 4.246,81</td><td class="ok">PAGO</td></tr><tr class="gt"><td colspan="3">✅ TOTAL PAGO NA OBRA</td><td class="r">R$ 86.384,81</td><td></td></tr></table><div class="ds-st mall" style="margin-top:12px">💳 Já comprometido — demais parcelas (a vencer)</div><table class="ds-t"><tr><th>Fornecedor / referência</th><th>Período</th><th class="r">Valor</th></tr><tr><td>Superar — clima salão/adm/kids (parc. 3–7/7)</td><td>set/26 → jan/27</td><td class="r">R$ 45.700,00</td></tr><tr><td>Rovano — testeira estrutura metálica (7 parcelas de R$ 6.500)</td><td>set/26 → mar/27</td><td class="r">R$ 45.500,00</td></tr><tr><td>LOGG — iluminação LED (3× R$ 4.246,81) ⚠ lançado 2× no financeiro — conferir duplicidade</td><td>out → dez/26</td><td class="r">R$ 25.480,90</td></tr><tr><td>Rofer — 2 climatizadores KS23 (4× R$ 3.400)</td><td>set → dez/26</td><td class="r">R$ 13.600,00</td></tr><tr><td>Inndor — paisagismo (parc. 3–4/4)</td><td>out → nov/26</td><td class="r">R$ 10.093,50</td></tr><tr><td>Som — cabeamento 2/2 (R$ 5.850,30) + Zanin (R$ 2.925,15)</td><td>set/26</td><td class="r">R$ 8.775,45</td></tr><tr><td>JK Telecom — CFTV saldo MO (parc. 2–4/4)</td><td>out → dez/26</td><td class="r">R$ 8.775,00</td></tr><tr><td>Multcabos — material rede/CFTV (2 lançamentos)</td><td>out → nov/26</td><td class="r">R$ 2.622,74</td></tr><tr class="tot"><td colspan="2">✅ Valor pago</td><td class="r">R$ 86.384,81</td></tr><tr class="tot"><td colspan="2">💳 A pagar (diferença — demais parcelas)</td><td class="r">R$ 160.547,59</td></tr><tr class="gt"><td colspan="2">Σ VALOR TOTAL COMPROMETIDO NA OBRA</td><td class="r">R$ 246.932,40</td></tr></table></div><div class="ds-sec pts"><div class="ds-st">5️⃣ Pontos para a conversa</div><ul class="ds-ul"><li>Contrato assinado em 14/11/2023 com promessa verbal de entrega em 1 ano — não cumprida (~22 meses); por isso a abertura não acontece este ano.</li><li>Adiantamento de R$ 120.000: está escrito no CONTRATO DE LOCAÇÃO (pág. 2, cláusula do aluguel inicial — 1ª parcela 13/01/2024, abatível nos 60 aluguéis) · ⚠ NÃO LOCALIZEI o histórico desse pagamento — verificando se encontro o comprovante; perguntar ao Sr. Antônio se foi pago e, se a operação não avançar, pedir devolução.</li><li>⚠ Garantia adicional citada pelo Rapha (R$ 10 mil? R$ 25 mil? em quantas parcelas?): SEM REGISTRO/HISTÓRICO localizado — verificando no financeiro; confirmar com o Sr. Antônio se houve, quanto foi e como compensa.</li><li>Balões de 14/04/2026 NÃO PAGOS — R$ 54.005,49 (valor cheio) em cada lote da MANPA (QA e QB) = R$ 108.010,98 em atraso. Mensais consideradas em dia até set/26.</li><li>Custo do projeto (Bruno/Montoya): confirmar metragem final com Ivan — base contratual 2.111 m² × R$ 66/m² = R$ 139.326.</li><li>Simulações de parcelamento (R$ 1.328.000 / R$ 2.000.000 com juros de mercado) — Rapha envia à parte para anexar.</li><li>⚠ LOGG (iluminação) aparece LANÇADA 2× no financeiro (duas séries iguais de 3× R$ 4.246,81 = R$ 25.480,90): não há histórico que confirme a segunda série — verificar se aconteceu ou se é duplicidade ANTES de pagar; se for duplicada, o comprometido cai para R$ 147.807,14.</li></ul></div></div>
+<script>
+const D={
+mapoli:{name:'★★★ Mapoli',date:'30/09/2026',type:'Abertura',color:'#D63B3B',total:24504,meta:'Infra R$ 46k já executada · Abertura 30/09',
+cats:[{n:'Fritadeira',v:13280,c:'#E8650A'},{n:'Influencers',v:10000,c:'#E8650A'},{n:'Uniformes',v:724,c:'#1A9F4A'},{n:'Planta',v:500,c:'#C9940A'}],
+secs:[{t:'Pendências',i:'🔦',c:'#3B6FD6',r:[{d:'PENDENTE: definir iluminação lá fora (externa) — sem valor até fechar orçamento',v:0,st:'pend',p:'decisão 21/09'},{d:'PENDENTE: mesa posta (copo, talheres, saleiro, paliteiro) — verificar se a compra já foi feita e qual o status',v:0,st:'pend',p:'ver checklist'}]},{t:'Fritadeira',i:'🍳',c:'#E8650A',tot:13280,pg:1,r:[{d:'Fritadeira',v:13280,p:'Entrada + 3x'}]},{t:'Influencers',i:'📢',c:'#E8650A',tot:10000,r:[{d:'Influencers',v:10000}]},{t:'Uniformes',i:'👕',c:'#1A9F4A',tot:724,uq:1,r:[{d:'Polo',qty:2,unit:56,v:112},{d:'Camiseta',qty:18,unit:34,v:612}]},{t:'Planta',i:'🌱',c:'#C9940A',tot:500,r:[{d:'Planta',v:500}]}],notes:[{c:'#3B6FD6',t:'🔦 <strong>Pendências ativas (21/09):</strong> definir a iluminação lá fora (sem valor até fechar proposta) · verificar status da compra da mesa posta. Abertura em <strong>30/09</strong>.'},{c:'#D63B3B',t:'<strong>Infra (R$ 46.084):</strong> já executada.'},{c:'#3B6FD6',t:'🍽 <strong>Mesa Posta (R$ 8.192, ref. Isaías): removida do orçamento (21/09)</strong> — virou ponto do checklist: conferir se copo, talheres, saleiro e paliteiro já foram comprados e qual o status.'},{c:'#E8650A',t:'🔥 <strong>Fora do orçamento (zerados/não inclusos):</strong> Aumento de Forno (R$ 22.000, pgto a definir) zerado em 21/09 · Mini Forno Esteira (R$ 20.400 em 10x) segue fora, avaliação suspensa.'}]},
+pepito:{name:'🍔 Pepito Burger',date:'30/10/2026',type:'Inauguração',color:'#7B4FBF',total:59677,meta:'',
+cats:[{n:'Infraestrutura',v:30428,c:'#D63B3B'},{n:'Embalagens',v:17900,c:'#C9940A'},{n:'Influencers',v:10000,c:'#E8650A'},{n:'Uniformes',v:849,c:'#1A9F4A'},{n:'Cardápio',v:500,c:'#7B4FBF'}],
+secs:[{t:'Infraestrutura',i:'🏗',c:'#D63B3B',tot:30428,pg:1,r:[{d:'Fritadeira Mult Solution',v:13280,p:'Entrada + 3x'},{d:'BCaldi',v:10000,p:'Pendente'},{d:'Freezer Loja',v:5600,p:'3x · pedir 30d antes (25/ago)'},{d:'Juliana Desenho Parede',v:1548,p:'Pago 40%, falta projetar'}]},{t:'Embalagens',i:'📦',c:'#C9940A',tot:17900,r:[{d:'7 itens embalagem',v:17900,p:'4x'}]},{t:'Influencers',i:'📢',c:'#E8650A',tot:10000,r:[{d:'Influencers',v:10000}]},{t:'Uniformes',i:'👕',c:'#1A9F4A',tot:849,uq:1,r:[{d:'Camiseta',qty:18,unit:34,v:612},{d:'Polo',qty:2,unit:56,v:112},{d:'Boné',qty:5,unit:25,v:125}]},{t:'Cardápio',i:'📄',c:'#7B4FBF',tot:500,r:[{d:'Cardápio',v:500}]}],notes:[{c:'#7B4FBF',t:'📅 <strong>Abertura: 30/10/2026</strong> (definida 21/09 — resumo anterior indicava 30/09) — pedir Fritadeira e Freezer ~1 semana antes.'},{c:'#D63B3B',t:'⚠️ <strong>Começar a pagar mediante inauguração</strong> — parcelas iniciam conforme pedido do item.'}]},
+
+elpatron:{name:'🌮 El Patrón',date:'02–05/11/2026',type:'Inauguração',color:'#DC2626',total:140545.12,meta:'Equipamentos p/ distribuição: Biggs 04 · 08 · 10 · Isaías Madre — Resumo Executivo (set/26)',
+cats:[{n:'Bancadas Inox',v:36000,c:'#DC2626'},{n:'Expositores VF55',v:50476,c:'#3B6FD6'},{n:'Sanduicheiras',v:22048,c:'#E8650A'},{n:'Sous Vide',v:21141.12,c:'#7B4FBF'},{n:'Prolar (est.)',v:10000,c:'#C9940A'},{n:'Batedeiras',v:880,c:'#1A9F4A'}],
+secs:[
+{t:'Entrada + Saldo',i:'🏦',c:'#DC2626',tot:36000,pg:1,r:[{d:'Bancada multiuso em inox AISI 430 (4 un. × R$ 9.000)',v:36000,p:'50% sinal (R$ 18.000) + saldo contra entrega · prazo 20–30 dias'}]},
+{t:'Parcelado',i:'📆',c:'#3B6FD6',tot:72084,pg:1,r:[
+{d:'Expositor Vertical Metalfrio VF55 (4 un.) — Prolar',v:26000,p:'Boleto 30/60/90/120/160/190'},
+{d:'Expositor Vertical Metalfrio VF55 (4 un.) — Loja 1200',v:24476,p:'Boleto 28/56/84'},
+{d:'Sanduicheira Croydon SASL chapa lisa (4 un.)',v:11608,p:'Boleto 28/56/84'},
+{d:'Utensílios Prolar',v:10000,st:'est',p:'Estimado — fechar orçamento · Boleto Prolar 30→190'}]},
+{t:'À Vista',i:'💳',c:'#E8650A',tot:32461.12,pg:1,r:[
+{d:'Kit Sous Vide TermoULTRA 3.000W 220V + Cuba 47L (4 un.)',v:21141.12,p:'Compra internet à vista'},
+{d:'Sanduicheira Croydon SASL chapa lisa (4 un.) — Refrisol',v:10440,p:'À vista'},
+{d:'Batedeira Britânia Diamante Inox 4.3L (4 un.)',v:880,p:'Internet à vista'}]},
+{t:'Fora do Total',i:'⚠️',c:'#8B84A0',r:[{d:'Banho Maria (4 un. × R$ 1.510) — sem forma de pagamento na fonte',v:6040,st:'pend'}]}],
+notes:[{c:'#DC2626',t:'🗓 <strong>Inauguração: 02 a 05/11/2026</strong> (definido 21/09) — no roadmap: Delivery 02/11 e Salão 05/11; ajuste no calendário se a ordem for outra.'},
+{c:'#3B6FD6',t:'📦 <strong>Equipamentos para DISTRIBUIÇÃO</strong> entre Biggs 04, Biggs 08, Biggs 10 e Isaías Madre (4 unidades de cada item) — confirmar destino final antes de emitir os pedidos.'},
+{c:'#D97706',t:'⚠️ <strong>Desembolso imediato: R$ 50.461,12</strong> (à vista R$ 32.461,12 + sinal da bancada R$ 18.000) — validar caixa antes de liberar. Utensílios Prolar são estimativa de R$ 10.000.'},
+{c:'#8B84A0',t:'🍲 Banho Maria (R$ 6.040) listado sem forma de pagamento — fora do total oficial de R$ 140.545,12.'}]},
+galileu01:{name:'Biggs Pizza e Massa Leonor',date:'—',type:'Abertura',color:'#3B6FD6',total:389791.70,meta:'ex-Galileu 01 · Rua Ruy Virmond Carnascialli · Planilha Formas de Pagamento (Ivan, ago/26)',
+cats:[{n:'Equipamentos',v:207091.70,c:'#3B6FD6'},{n:'Obra e Serviços',v:132700,c:'#D63B3B'},{n:'Insumos Iniciais',v:50000,c:'#D97706'}],
+secs:[{t:'Obra e Serviços',i:'🏗',c:'#D63B3B',tot:132700,pg:1,r:[
+{d:'Mix Mobília — painéis MDF, balcão, balcão delivery, armários',v:41451,p:'Ent. 30% + 4 boletos 30/60/90/120'},
+{d:'Comunicação Visual — BCaldi',v:30000,st:'est',p:'Estimado — forma não informada'},
+{d:'Câmeras e Rede — Satélite',v:19912,p:'Ent. R$ 5.000 + 4x R$ 3.728,16'},
+{d:'Paisagismo — Inndor',v:15000,p:'Ent. 30% + 4 boletos 30/60/90/120'},
+{d:'Reforma de cadeiras — pintura (90 un.)',v:10800,p:'1 entrada + restante na entrega'},
+{d:'Espaço Kids — Mami Brinquedos',v:8290,p:'1 entrada + 2 boletos'},
+{d:'Construção do banco da entrada',v:2000,st:'est',p:'1 entrada + 1 pgto'},
+{d:'Banco de concreto — Juracir',v:1850,p:'50% entrada + 50% final'},
+{d:'Reforma assentos Tok Toks (26 un.)',v:1560,p:'2x PIX'},
+{d:'Instalação da madeira do banco — Alan',v:1000,p:'Pgto no final do trabalho'},
+{d:'Parede gesso acartonado cozinha — Top Line',v:837,p:'Boleto 30 dias'}]},
+{t:'Equipamentos',i:'⚙️',c:'#3B6FD6',tot:257091.70,pg:1,r:[
+{d:'Forno Pietro 55/1 c/ esteira estendida (entrega 45d)',v:41400,p:'50% entrada + 10 boletos'},
+{d:'Construnox — equipamentos inox (atualizado)',v:31627,p:'5x boleto'},
+{d:'Prolar — utensílios/equipamentos',v:25000,p:'7x boleto'},
+{d:'Balcão refr. GBFE-200AI (3 un.)',v:23970,p:'5x boleto'},
+{d:'Conservador VF55FT tripla ação (3 un.)',v:17041,p:'28/56/84 após entrega'},
+{d:'Fritadeira digital dupla 220V',v:13980,p:'Sinal + 2 OP ⚠ validar'},
+{d:'Balcão refr. GBFE-250AI',v:10857,p:'7x boleto'},
+{d:'Informática',v:10000,p:'3x (a confirmar)'},
+{d:'Cortador de frios AXT 30I',v:8372,p:'3 boletos 28/56/84'},
+{d:'Amassadeira MBI25',v:6439.45,p:'28/56/84'},
+{d:'Processador PA7',v:5691,p:'7x boleto'},
+{d:'Impressoras térmicas (7 un.)',v:3913,p:'3x boleto'},
+{d:'Aquecedor de frituras',v:2490,p:'Sinal + 2 OP ⚠ validar'},
+{d:'Balança UR 10000',v:1891.25,p:'28/56/84'},
+{d:'Fogão 6 bocas (2 un.)',v:1700,p:'5x boleto'},
+{d:'Extrator de suco ESB Super N',v:1480,p:'7x boleto'},
+{d:'Liquidificadores 1,5L (2 un.)',v:1240,p:'7x boleto'},
+{d:'Primeira compra da loja — insumos',v:50000,p:'2x R$ 25.000 (a confirmar)'}]}],
+notes:[{c:'#3B6FD6',t:'📄 <strong>Atualizado pela Planilha de Formas de Pagamento (ago/26):</strong> Obra e Serviços R$ 132.700,00 + Equipamentos R$ 257.091,70 (inclui 1º estoque R$ 50.000 e informática R$ 10.000) = R$ 389.791,70. Itens já pagos (Della Bruna, Climatizador Europa, assentos/sofás, Portobello, persianas) não constam mais.'},
+{c:'#D63B3B',t:'⚠️ <strong>Validar com Ivan:</strong> Mix Mobília (condição original registra 30/60/90/121 — conferir se é 120); Satélite (condição soma R$ 19.912,64, dif. R$ 0,64); Mami Kids (valor da linha × total do orçamento); Aquecedor e Fritadeira (condição conjunta de R$ 5.215 + 2x R$ 5.212,50 soma R$ 15.640 e não bate com os itens); Fogão 6 bocas (2 un. com total de R$ 1.700); Extrator subiu de R$ 1.240 → R$ 1.480.'}]},
+galileu03:{name:'Galileu 03 Vila Casoni',date:'—',type:'Abertura',color:'#0891B2',total:373555.93,meta:'Planilha Formas de Pagamento (Ivan, set/26) · base 29/01 · CAPEX: R$ 373 mil',
+cats:[{n:'Equipamentos',v:172917.50,c:'#3B6FD6'},{n:'Obra e Serviços',v:150638.43,c:'#D63B3B'},{n:'Insumos Iniciais',v:50000,c:'#D97706'}],
+secs:[{t:'Obra e Serviços',i:'🏗',c:'#D63B3B',tot:150638.43,pg:1,r:[
+{d:'Comunicação Visual — BCaldi',v:35000,st:'est',p:'Estimado — ent. R$ 10.000 + 7x'},
+{d:'Mix Mobília — móveis/marcenaria',v:28547,p:'50% via PIX semanal + 4x'},
+{d:'Mobiliário Della Bruna (compra já realizada)',v:25600,p:'Ent. R$ 5.000 + 6x R$ 3.433,33'},
+{d:'Câmeras e Rede — Satélite',v:19912.63,p:'Entrada + 50% após conclusão ⚠ validar'},
+{d:'Espaço Kids',v:13490,p:'1 entrada + 2 boletos'},
+{d:'Reforma cadeiras externas — pintura (96 un.)',v:11520,p:'1 ent + 2 PIX/entrega ⚠ validar entrada'},
+{d:'Automação/Som — Elegance',v:8918.80,p:'1 entrada + 2 boletos'},
+{d:'Reforma cadeiras internas — pintura/ferragem (32 un.)',v:2400,p:'1 ent + 2 PIX/entrega'},
+{d:'Reforma cadeiras internas — assentos (32 un.)',v:2400,p:'1 ent + 2 PIX/entrega'},
+{d:'Banco de concreto — Juracir',v:1850,p:'1 ent + 1 no final'},
+{d:'Madeira do banco — Luan',v:1000,p:'Pgto único no final'}]},
+{t:'Equipamentos',i:'⚙️',c:'#3B6FD6',tot:172917.50,pg:1,r:[
+{d:'Forno e Abre Pizza Pietro (entrega 45d)',v:41400,p:'50% entrada + 10 boletos'},
+{d:'Construnox — inox (revisado · FORA do total oficial — alinhado ao CAPEX)',v:30144,p:'5x boleto',st:'pend'},
+{d:'Item sem descrição — ⚠ identificar fornecedor',v:23900,p:'50% ent + 10x cartão'},
+{d:'Prolar — equipamentos/utensílios',v:20000,p:'7x boleto'},
+{d:'Expositor vertical VF55 Metalfrio (2 un.)',v:11678,p:'28/56/84'},
+{d:'Balcão refr. GBFE-250AI',v:10258.25,p:'28/56/84'},
+{d:'Compra do Aceno',v:10000,p:'5x boleto ⚠ conferir descrição'},
+{d:'Balcão refr. GBFE-200AI',v:8863,p:'28/56/84'},
+{d:'Cortador de frios AXT 30I',v:8790,p:'3 boletos 28/56/84'},
+{d:'Amassadeira MBI25',v:6263,p:'28/56/84'},
+{d:'Processador PA7',v:5691,p:'7x boleto'},
+{d:'Impressoras térmicas (6 un.)',v:3354,p:'3x boleto'},
+{d:'Fritadeira digital dupla 220V',v:13980,p:'Sinal + 2 OP ⚠ validar'},
+{d:'Aquecedor de frituras',v:2490,p:'Sinal + 2 OP ⚠ validar'},
+{d:'Balança UR 10000',v:1891.25,p:'28/56/84'},
+{d:'Fogão 6 bocas',v:1690,p:'7x boleto'},
+{d:'Extrator de suco ESB Super N',v:1429,p:'7x boleto'},
+{d:'Liquidificadores 1,5L (2 un.)',v:1240,p:'7x boleto'}]},
+{t:'Insumos Iniciais',i:'🛒',c:'#D97706',tot:50000,pg:1,r:[{d:'Primeira compra da loja — insumos',v:50000,p:'2x R$ 25.000 boleto (a confirmar)'}]}],
+notes:[{c:'#0891B2',t:'📄 <strong>Alinhado ao CAPEX (21/09): R$ 373.555,93</strong> — Obra R$ 150.638,43 + Equipamentos R$ 172.917,50 + Insumos R$ 50.000. O Construnox (R$ 30.144) voltou a ficar FORA do total, como na planilha do Ivan (lista CAPEX: Vila Casoni R$ 373 mil). Novos itens: reformas de cadeiras internas (2x R$ 2.400) e Juracir/Luan. Della Bruna voltou como parcelas a pagar (Ent. R$ 5.000 + 6x) — compra realizada, pagamento em curso. Climatizadores Europa (pagos) e Portobello não constam mais.'},
+{c:'#D63B3B',t:'⚠️ <strong>Validar com Ivan:</strong> Satélite (entrada é 50%?); reforma de cadeiras (entradas sem valor definido); Aquecedor/Fritadeira (condição conjunta R$ 15.640 não bate); item de R$ 23.900 sem descrição/fornecedor; \"Compra do Aceno\" conferir descrição.'}]},
+galileu02:{name:'Galileu 02 Zona Sul',date:'—',type:'Abertura',color:'#D946EF',total:254162.05,meta:'Av. Guilherme de Almeida, 55 · Planilha Formas de Pagamento (Ivan, ago/26)',
+cats:[{n:'Equipamentos',v:120340.25,c:'#3B6FD6'},{n:'Obra e Serviços',v:83821.80,c:'#D63B3B'},{n:'Insumos Iniciais',v:50000,c:'#D97706'}],
+secs:[{t:'Obra e Serviços',i:'🏗',c:'#D63B3B',tot:83821.80,pg:1,r:[
+{d:'Comunicação Visual — BCaldi (entrega 30–45d)',v:20000,p:'7 boletos ⚠ validar parcelas'},
+{d:'Câmeras e Rede — Satélite',v:19900,p:'Ent. R$ 6.461,10 + 3x R$ 4.479,63 ⚠ soma R$ 21.537'},
+{d:'Sistema de som completo — Elegance',v:12926.80,p:'1 entrada + 2 boletos'},
+{d:'Paisagismo',v:9500,p:'4 boletos ⚠ validar parcelas'},
+{d:'Película de controle solar',v:8165,p:'3 boletos 15/45/75'},
+{d:'Reforma cadeiras Tok&Stok — pintura (40 un.)',v:3000,p:'1 ent + 3x PIX'},
+{d:'Reforma cadeiras Tok&Stok — troca assentos (40 un.)',v:3000,p:'1 ent + 3x PIX'},
+{d:'Reforma cadeiras Tramontina (22 un. externas)',v:2640,p:'1 ent + 3x PIX'},
+{d:'Porta do estoque — SJ Serralheria',v:2200,p:'2x PIX'},
+{d:'Mão de obra tubulação AC — Super Ar (4m)',v:1200,p:'2 boletos 30/60'},
+{d:'Bancadas granito Verde Ubatuba — Moldulândia',v:840,p:'⚠ validar forma e prazo'},
+{d:'Reparo do forro da cozinha',v:450,p:'À vista no final'}]},
+{t:'Equipamentos',i:'⚙️',c:'#3B6FD6',tot:120340.25,pg:1,r:[
+{d:'Construnox — saldo OC-012/25',v:25250,p:'Ent. 20% (R$ 5.050) + 4x R$ 5.050'},
+{d:'Prolar — utensílios de cozinha',v:20000,p:'7 boletos'},
+{d:'Fritadeira digital dupla 220V',v:13980,p:'Ent. R$ 4.660 + 2x R$ 4.660 (30/60)'},
+{d:'Uniformes (estimado)',v:10000,st:'est',p:'⚠ forma não informada'},
+{d:'Balcão refr. GBFE-250AI',v:9500,p:'7 boletos ⚠ validar parcelas'},
+{d:'Balcão refr. GBFE-200AI (2 un.)',v:8500,p:'5 boletos ⚠ validar parcelas'},
+{d:'Cortador de frios AXT 30I',v:8372,p:'3 boletos 28/56/84'},
+{d:'Amassadeira MBI25',v:6263,p:'28/56/84'},
+{d:'Processador PA7',v:5691,p:'7 boletos'},
+{d:'Impressoras térmicas (7 un.)',v:3354,p:'3x ⚠ qtd. diverge da descrição'},
+{d:'Fogão 4 bocas (2 un.)',v:2380,p:'5 boletos'},
+{d:'Aquecedor de frituras',v:2490,p:'Ent. R$ 830 + 2x R$ 830 (30/60)'},
+{d:'Balança UR 10000',v:1891.25,p:'28/56/84'},
+{d:'Extrator de suco ESB Super N',v:1429,p:'7 boletos ⚠ validar parcelas'},
+{d:'Liquidificadores 1,5L (2 un.)',v:1240,p:'7 boletos'}]},
+{t:'Insumos Iniciais',i:'🛒',c:'#D97706',tot:50000,pg:1,r:[{d:'Primeiro insumo da loja',v:50000,p:'2x R$ 25.000 ⚠ forma a confirmar'}]}],
+notes:[{c:'#D946EF',t:'📄 <strong>Atualizado pela Planilha de Formas de Pagamento (ago/26):</strong> Obra R$ 83.821,80 + Equipamentos R$ 170.340,25 (inclui insumos R$ 50.000) = R$ 254.162,05. Reformas de cadeiras revisadas para valores bem menores (Tok&Stok 40+40 un. e Tramontina 22 un. = R$ 8.640 no total, ante R$ 43.125 do resumo anterior). Construnox voltou como saldo da OC-012/25 com condição fechada (Ent. 20% + 4x).'},
+{c:'#D63B3B',t:'⚠️ <strong>Validar com Ivan:</strong> Satélite (condição textual soma R$ 21.537 vs item R$ 19.900); BCaldi/paisagismo/refrigeração/extrator/impressoras (parcelas originais inconsistentes com o total); Moldulândia e uniformes sem forma definida; existe linha sem item no material original; planilha registra previsão de inauguração a confirmar.'}]},
+vespa:{name:'Vespa CD Cambé',date:'—',type:'Migração',color:'#E8650A',total:164621.24,meta:'Resumo Executivo Vespa CD (set/26) · 11 frentes · Itaim/Cambé ⚠ confirmar endereço',
+cats:[{n:'Refrigeração',v:33436.24,c:'#7B4FBF'},{n:'Elétrica',v:32500,c:'#3B6FD6'},{n:'Hidráulica',v:29000,c:'#1A9F4A'},{n:'Serralheria',v:17500,c:'#D63B3B'},{n:'Inox (est.)',v:15000,c:'#0891B2'},{n:'Tecnologia (est.)',v:15000,c:'#6D28D9'},{n:'Climatização',v:14200,c:'#E8650A'},{n:'Gesso',v:7985,c:'#C9940A'}],
+secs:[
+{t:'Refrigeração',i:'❄️',c:'#7B4FBF',tot:33436.24,r:[{d:'Super AR — desmontagem/montagem de 4 câmaras frigoríficas (c/ frete e materiais)',v:29000,p:'⚠ condição de pagamento não informada'},{d:'Super AR — painel modular PIR 12,05 m (soalho câmara de congelados)',v:4436.24,p:'3x boleto após aprovação de cadastro'}]},
+{t:'Elétrica',i:'⚡',c:'#3B6FD6',tot:32500,r:[{d:'MO Elétrica — Emeson (salão, cozinha, refeitório, externa, quadros, portão)',v:17500,p:'30% ent. + saldo no final da reforma'},{d:'Material elétrico — Eletro Conduluz',v:15000,st:'est',p:'Estimado · 7x boleto'}]},
+{t:'Hidráulica',i:'🔧',c:'#1A9F4A',tot:29000,r:[{d:'Lico — MO hidráulica (banheiros, cozinha, ralos, torneiras)',v:12000,p:'30% ent. + saldo no final'},{d:'Lico — limpeza/impermeabilização da caixa d\'água',v:2000},{d:'Material hidráulico',v:15000,st:'est',p:'Estimado'}]},
+{t:'Serralheria',i:'🔩',c:'#D63B3B',tot:17500,r:[{d:'Pacote: portão deslizante, destravar 4 portas, telas, porta metálica, sapatas',v:17500,p:'50% ent. + saldo ao finalizar'}]},
+{t:'Inox',i:'🍳',c:'#0891B2',tot:15000,r:[{d:'Construnox — mobília da cozinha em inox',v:15000,st:'est',p:'Estimado · 5x boleto'}]},
+{t:'Tecnologia',i:'📹',c:'#6D28D9',tot:15000,r:[{d:'Satélite — câmeras e rede',v:15000,st:'est',p:'Estimado · 30% ent. + 5 boletos'}]},
+{t:'Climatização',i:'🌬',c:'#E8650A',tot:14200,r:[{d:'Super AR — ar-condicionado 12 BTUs (máquina + instalação)',v:3200,p:'3x boleto'},{d:'Europa — climatizador da cozinha de produção',v:11000,st:'est',p:'Estimado · 30% ent. + 5 boletos'}]},
+{t:'Gesso',i:'🧱',c:'#C9940A',tot:7985,m:'Top Line',r:[{d:'Parede/forro acartonado, retirada do forro de madeira, fechamentos',v:7985,p:'3x boleto'}]}],
+notes:[{c:'#E8650A',t:'📄 <strong>Base atualizada (Resumo Executivo set/26): R$ 164.621,24 em 11 frentes</strong> — substitui a base anterior de R$ 117.624. Gesso subiu para R$ 7.985; entram clima 12BT, painel modular, inox Construnox, Satélite e Europa; sai o assoalho de R$ 5.500.'},
+{c:'#D97706',t:'⚠️ <strong>R$ 71.000 são estimativas</strong> (material elétrico, material hidráulico, inox, tecnologia, Europa) — fechar propostas antes da liberação. Entradas conhecidas: R$ 30.500.'},
+{c:'#D63B3B',t:'🚿 <strong>Hidráulica — exclusões do prestador:</strong> não se responsabiliza por esgoto entupido nem por trincas/rachaduras na caixa d\'água.'},
+{c:'#8B84A0',t:'📅 Data da fonte (01/05/2025) vencida — atualizar cronograma da migração; confirmar endereço definitivo (fonte cita Itaim e Cambé/PR).'}]},
+centraldelivery:{name:'Central de Delivery',date:'—',type:'Implantação',color:'#059669',total:74539.28,meta:'Mafra (economia R$ 5.666)',
+cats:[{n:'Infra CC (Jeferson)',v:22427.79,c:'#7B4FBF'},{n:'Forro/Drywall (Mafra)',v:15044.04,c:'#059669'},{n:'Iluminação/Elétrica',v:10000,c:'#3B6FD6'},{n:'Climatização',v:9770,c:'#0891B2'},{n:'TV+Equip.',v:5000,c:'#7B4FBF'},{n:'Outros',v:12297.45,c:'#C9940A'}],
+secs:[{t:'Infraestrutura Call Center',i:'📞',c:'#7B4FBF',tot:22427.79,pg:1,r:[{d:'Jeferson — Infra CC (5% desc.)',v:22427.79,p:'Ent.40% + 5x'}]},{t:'Forro/Drywall/Isolamento',i:'🧱',c:'#059669',tot:15044.04,pg:1,r:[{d:'Mafra Acabamentos ✅',v:15044.04,p:'5x'},{d:'Gesso Top Line (preterido)',v:18753.75,p:'—'}]},{t:'Iluminação e Elétrica',i:'💡',c:'#3B6FD6',tot:10000,pg:1,r:[{d:'Iluminação e Elétrica ⚠️ estimado',v:10000,p:'4x'}]},{t:'Climatização',i:'❄️',c:'#0891B2',tot:9770,pg:1,r:[{d:'Transferência AC (BG01→BG07)',v:5500,p:'3x'},{d:'Adequação Climatizadores',v:4270,p:'3x'}]},{t:'Equipamentos',i:'📺',c:'#7B4FBF',tot:5000,pg:1,r:[{d:'TV 75 polegadas ⚠️ estimado',v:5000,p:'Outubro'}]},{t:'Uniformes',i:'👕',c:'#E8650A',tot:4000,pg:1,r:[{d:'Ruvest ⚠️ estimado',v:4000,p:'Entrada + 3x'}]},{t:'Outros',i:'📦',c:'#C9940A',tot:8297.45,pg:1,r:[{d:'Prateleiras Estoque',v:2347.45,p:'7x'},{d:'Facial Porta',v:1500,p:'5x'},{d:'Pintura Sala',v:1500,p:'15 dias'},{d:'Fechamento Buraco Laje',v:1000,p:'5x'},{d:'Material de Pintura',v:1000,p:'2x'},{d:'Porta',v:650,p:'À vista'},{d:'Cortina',v:300,p:'À vista'}]}],notes:[{c:'#D97706',t:'📋 <strong>Resumo executivo (Ivan, set/26) diverge do orçamento curado:</strong> total R$ 78.928,95 — usa Top Line R$ 18.753,75 no forro (aqui: Mafra R$ 15.044,04, escolhida) e Jefferson R$ 23.608,20 sem o desconto de 5% (aqui: R$ 22.427,79); laminado Conport R$ 13.000 e TV R$ 5.000 seguem condicionais; abertura prevista <strong>Outubro/2026</strong> vs 23/09 do cronograma. Validar antes de ajustar.'},{c:'#059669',t:'<strong>Economia Mafra:</strong> R$ 5.666 no forro vs fornecedores iniciais.'},{c:'#E8650A',t:'🏗 <strong>Piso Vinílico Mafra (R$ 13.295,36):</strong> removido do orçamento — rever em outubro.'},{c:'#3B6FD6',t:'⚠️ <strong>Valores estimados:</strong> Iluminação/Elétrica, TV 75\", Uniformes Ruvest — aguardando definitivo.'},{c:'#7B4FBF',t:'📹 <strong>Câmeras IA (Jeferson R$ 18.000):</strong> removida — voltar a falar em 2027.'},{c:'#3B6FD6',t:'🖥 <strong>Equipamentos TI (sem custo):</strong> 18 monitores + 15 notebooks + 3 monitores extra (gerente) — já disponíveis.'},{c:'#C9940A',t:'🪑 <strong>Mesa:</strong> primeiro usar a do depósito, depois avaliar a do escritório.'}]},
+farmelhor:{name:'Farmelhor — Sunset Mall',date:'Out/2026',type:'Abertura',color:'#16A34A',total:736119,meta:'CC: ML Consultoria em Food Service · Solicitante: Ivan Neves',
+cats:[{n:'Insumos Iniciais',v:500000,c:'#16A34A'},{n:'Mobiliário',v:175679,c:'#059669'},{n:'Com. Visual',v:25000,c:'#E8650A'},{n:'Climatização',v:23600,c:'#3B6FD6'},{n:'Tecnologia',v:11840,c:'#6D28D9'}],
+secs:[
+{t:'Insumos Iniciais (Medicamentos)',i:'💊',c:'#16A34A',tot:500000,r:[{d:'Estoque inicial de medicamentos',v:500000}]},
+{t:'Mobiliário — Metalfarma',i:'🪑',c:'#059669',tot:175679,r:[{d:'Mobiliário completo Metalfarma',v:175679}]},
+{t:'Climatização — Europa',i:'❄️',c:'#3B6FD6',tot:23600,pg:1,r:[{d:'Climatizadores Europa (02 unidades)',v:23600,p:'30% entrada + 5 boletos'}]},
+{t:'Tecnologia & Infra',i:'💻',c:'#6D28D9',tot:11840,pg:1,r:[{d:'Automação — Elegance',v:5000,p:'Entrada + 1 boleto'},{d:'Câmeras e Rede — Satélite',v:5500,p:'Entrada + 1 parcela'},{d:'Passagem de cabos e mão de obra',v:1340,p:'A negociar'}]},
+{t:'Comunicação Visual — BCaldi',i:'🎨',c:'#E8650A',tot:25000,r:[{d:'Comunicação visual (estimado)',v:25000,st:'est'}]}],
+notes:[{c:'#16A34A',t:'📅 <strong>Inauguração prevista:</strong> Outubro/2026. Valores sujeitos à aprovação e contratação dos fornecedores.'}]},
+matuza:{name:'Sunset Churrascaria (Fogo no Boi)',date:'—',type:'Abertura',color:'#92400E',total:1328000,meta:'ex-Churrascaria Matuza · Sunset Mall · ajustado ao CAPEX 21/09',
+cats:[{n:'Equipamentos Oper.',v:424803,c:'#E8650A'},{n:'Itens Estratégicos & Serviços',v:385950,c:'#6D28D9'},{n:'Climatização',v:230300,c:'#3B6FD6'},{n:'Obra Civil (fechamento)',v:200562.19,c:'#92400E'},{n:'Já Pago',v:86384.81,c:'#1A9F4A'}],
+secs:[{t:'Obra Civil Consolidada (valor de fechamento)',i:'🏗',c:'#92400E',tot:200562.19,r:[
+{d:'Obra civil e implantação — remanescente após ajuste ao CAPEX (antes R$ 587.217: Δ R$ 323.270 de cortes a detalhar + R$ 63.384,81 de execução transferida para \'Já Pago\')',v:200562.19}]},
+{t:'Climatização — Máquinas K7 Inverter (16 un.)',i:'❄️',c:'#3B6FD6',tot:141000,pg:1,r:[
+{d:'12 Cassete 55.000 BTUs + 3 Hi-Wall 18.000 + 1 Hi-Wall 12.000',v:141000,p:'50% entrada + 5 boletos'}]},
+{t:'Climatização — Instalação / Mão de Obra (orç. 363-2026)',i:'🔧',c:'#0891B2',tot:65700,pg:1,r:[
+{d:'Instalação e infra — Salão/Admin (12 cassetes, ~200m) + Espaço Kids (3 splits)',v:65700,p:'50% entrada (26/08) + 5 boletos'}]},
+{t:'Climatização — Climatizadores Europa (2 un.)',i:'🌬️',c:'#0D9488',tot:23600,pg:1,r:[
+{d:'Climatizadores evaporativos — Europa',v:23600,p:'30% ent. p/ 30d (R$ 10.000) + 4x R$ 3.400 ⚠ validar datas'}]},
+{t:'Itens Estratégicos & Serviços',i:'📌',c:'#6D28D9',tot:385950,pg:1,r:[
+{d:'Mobiliário Della Bruna — 228 cadeiras, 18 mesas redondas (estimado)',v:130000,st:'est',p:'⚠ não informada (prev. 30% + 7 boletos)'},
+{d:'Móveis Mix Mobília (estimativa)',v:50000,st:'est',p:'50% PIX + até 4x sem juros ⚠ validar frequência'},
+{d:'Comunicação Visual — BCaldi (estimado)',v:50000,st:'est',p:'⚠ não informada'},
+{d:'Estrutura Steel Frame — Rovano (Glasroc + Drywall + membrana)',v:37890,p:'⚠ não informada'},
+{d:'Paisagismo — finalização Inndor (estimativa)',v:35000,st:'est',p:'⚠ não informada'},
+{d:'Portas de correr Blindex — Casa do Vidro (3 portas, 4 folhas)',v:32500,p:'5x boleto'},
+{d:'Rede e câmeras — JK Telecom (mão de obra negociada)',v:18000,p:'40% na aprovação + 5 boletos'},
+{d:'Automação de som — Elegance (equipamentos)',v:15000,p:'3 boletos ⚠ planilha assume 4x — validar'},
+{d:'Piso da sala de apoio Kids — Conport (estimado)',v:13000,st:'est',p:'⚠ não informada'},
+{d:'Passagem de cabos e mão de obra de som — Elegance',v:4560,p:'50% entrada + 1 boleto'}]},
+{t:'Equipamentos Operacionais',i:'⚙️',c:'#E8650A',tot:424803,pg:1,r:[
+{d:'Forno combinado Rational iCombi Classic 6-1/1 (2 un.)',v:98610,p:'⚠ não informada'},
+{d:'Construnox — inox (estimativa)',v:55000,st:'est',p:'5x boleto'},
+{d:'Primeiro insumo da loja',v:50000,p:'2x R$ 25.000 ⚠ a confirmar'},
+{d:'Conservador VF55FT 220V (7 un.)',v:41923,p:'28/56/84 após entrega'},
+{d:'Balcão refr. GBFE-250AI (3 un.)',v:30774.75,p:'28/56/84'},
+{d:'Prolar — estimativa geral',v:30000,st:'est',p:'7x boleto'},
+{d:'Buffet de ilha — Cozimaq',v:25000,p:'⚠ não informada'},
+{d:'Churrasqueira rotativa a gás — Tomasi',v:22494,p:'6x R$ 3.749 s/ juros ou R$ 20.694 à vista'},
+{d:'Câmara fria 6 portas — Prolar (2 un.)',v:22600,p:'⚠ não informada (prev. 28/56/84)'},
+{d:'Fritadeira digital dupla 220V — Mult Solut',v:13980,p:'Condição conjunta ⚠ validar (soma R$ 15.640)'},
+{d:'Marketing — estimado',v:10000,st:'est',p:'À vista'},
+{d:'Máquina de gelo',v:6000,p:'28/56/84 após entrega'},
+{d:'Impressoras térmicas (10 un.)',v:5590,p:'⚠ não informada'},
+{d:'Fogão 6 bocas (2 un.)',v:3380,p:'5x boleto'},
+{d:'Aquecedor de frituras — Mult Solut',v:2490,p:'Condição conjunta ⚠ validar'},
+{d:'Liquidificadores 1,5L (3 un.)',v:1950,p:'7x boleto'},
+{d:'Balança UR 10000',v:1891.25,p:'28/56/84'},
+{d:'Chapa bifeteira 6,3mm gás',v:1690,p:'⚠ não informada (prev. 7x)'},
+{d:'Extrator de suco ESB Super N',v:1430,p:'⚠ não informada (prev. 7x)'}]},
+{t:'Já Pago — execução até 21/09',i:'✅',c:'#1A9F4A',tot:86384.81,r:[
+{d:'Piso da cozinha + frete + revestimento (Atlas · BTR · HF Urbanismo)',v:22080.30,st:'pago'},
+{d:'Climatização — Superar parcelas 1–2/7 (R$ 20.000) + Rofer entrada (R$ 10.000)',v:30000,st:'pago'},
+{d:'Paisagismo Inndor 1–2/4 (R$ 10.096,18) + Rovano entrada (R$ 6.500) + JK entrada (R$ 6.300)',v:22896.18,st:'pago'},
+{d:'Som Zanin (R$ 2.925,15) + LOGG iluminação ent. (R$ 4.246,81) + CFTV JK 1/4 (R$ 2.925,00) + Multcabos (R$ 1.311,37)',v:11408.33,st:'pago'}]}],
+notes:[{c:'#D63B3B',t:'🎯 <strong>Total AJUSTADO ao CAPEX aprovado: R$ 1.328.000</strong> (21/09). Composição: Equipamentos R$ 424.803 + Estratégicos R$ 385.950 + Climatização R$ 230.300 + Já pago R$ 86.384,81 + Obra civil remanescente (valor de fechamento) R$ 200.562,19. O Δ de R$ 323.270 vs o detalhamento anterior (R$ 1.651.270) foi absorvido no bloco de obra civil — cortes finos a detalhar com Ivan/Rapha.'},{c:'#92400E',t:'📄 <strong>\'Já Pago\' pelas contas a pagar (21/09): R$ 86.384,81 — tudo quitado.</strong> Inclui piso/revestimento/frete e as entradas de Superar, Rofer, Rovano, JK, Inndor, Zanin, LOGG, CFTV e Multcabos (itens dos blocos de clima/estratégicos) — por isso o remanescente de obra civil é o valor de fechamento, nada é contado duas vezes. <strong>Já comprometido com demais parcelas a vencer: R$ 160.547,59</strong> (set/26 → mar/27, dentro dos saldos dos blocos) ⚠ LOGG lançado 2× no financeiro — conferir.'},
+{c:'#3B6FD6',t:'❄️ <strong>Climatização — divergências vs docs anteriores:</strong> máquinas na planilha por R$ 141.000 (doc Super AR: R$ 141.403) e condição 50% ent + 5 boletos (doc: 5 boletos); fornecedor citado como Alison (docs: Super AR/Superar) — VALIDAR com Ivan. Climatizadores Europa na planilha por R$ 23.600 (ent. R$ 10.000 + 4x R$ 3.400); você havia informado R$ 22.000 — adotei a planilha, confirmar.'},
+{c:'#6D28D9',t:'📌 <strong>Novos itens vs versão anterior:</strong> Conport piso Kids (R$ 13.000) e Mix Mobília (R$ 50.000) entram como estratégicos; JK Telecom mantido no valor negociado de R$ 18.000. Della Bruna confirmado com 228 cadeiras + 18 mesas redondas.'},
+{c:'#E8650A',t:'⚠️ <strong>Sem condição de pagamento (validar):</strong> Rational (R$ 98.610), Della Bruna, BCaldi, Rovano, Paisagismo-finalização, Conport, Cozimaq, câmara fria, impressoras, chapa e extrator. Mult Solut: condição conjunta soma R$ 15.640 e não corresponde aos itens.'}]},
+galileu04:{name:'Galileu 04 Vasco da Gama',date:'—',type:'Abertura',color:'#6D28D9',total:456436.50,meta:'Planilha Formas de Pagamento (Ivan, ago/26) · base 29/01',
+cats:[{n:'Obra e Serviços',v:238119,c:'#D63B3B'},{n:'Equipamentos',v:168317.50,c:'#3B6FD6'},{n:'Insumos Iniciais',v:50000,c:'#D97706'}],
+secs:[{t:'Obra e Serviços',i:'🏗',c:'#D63B3B',tot:238119,pg:1,r:[
+{d:'Mix Mobília — móveis/marcenaria (estimativa)',v:41000,st:'est',p:'50% via PIX semanal + 4x'},
+{d:'Comunicação Visual — BCaldi',v:35000,st:'est',p:'Estimado — forma não informada'},
+{d:'Mobiliário Della Bruna (estimativa)',v:28000,st:'est',p:'1 entrada + 4 boletos'},
+{d:'Fechamento em vidro — Casa do Vidro',v:24500,p:'⚠ condição não informada'},
+{d:'Câmeras e Rede — Satélite',v:20908,p:'Entrada + 50% após conclusão ⚠ validar'},
+{d:'Forro de gesso — Topline',v:19518,p:'4x boleto'},
+{d:'Climatizadores Europa (2 un.)',v:19600,p:'1 entrada + 5 parcelas'},
+{d:'Reforma de cadeiras — 80 assentos',v:10800,st:'est',p:'1 ent + 3x PIX'},
+{d:'Automação/Som — Elegance (estimativa)',v:10000,st:'est',p:'1 entrada + 2 boletos'},
+{d:'Revestimento Portobello — já realizado',v:7733,p:'À vista ✓ pago'},
+{d:'Espaço Kids (estimativa)',v:7000,st:'est',p:'1 entrada + 2 boletos'},
+{d:'Reforma dos bancos (12 un.)',v:5400,st:'est',p:'1 ent + 3x PIX'},
+{d:'Pintura do forro do salão — mão de obra',v:5000,p:'1 entrada + final PIX'},
+{d:'Material de tinta — Bonfin',v:2660,p:'4x boleto'},
+{d:'Iluminação do salão — Eletro Conduluz (31 PAR20)',v:1000,p:'3x boleto'}]},
+{t:'Equipamentos',i:'⚙️',c:'#3B6FD6',tot:168317.50,pg:1,r:[
+{d:'Forno e Abre Pizza Pietro (entrega 45d)',v:41400,p:'50% entrada + 10 boletos'},
+{d:'Prolar — equipamentos/utensílios',v:20000,p:'7x boleto'},
+{d:'Conservador VF55FT (3 un.)',v:16800,p:'7x boleto'},
+{d:'Fritadeira digital dupla 220V',v:13980,p:'Sinal + 2 OP ⚠ validar'},
+{d:'Expositor vertical VF55 Metalfrio (2 un.)',v:11678,p:'28/56/84'},
+{d:'Balcão refr. GBFE-250AI',v:10258.25,p:'28/56/84'},
+{d:'Aceno digital',v:10000,p:'5x boleto'},
+{d:'Balcão refr. GBFE-200AI',v:8863,p:'28/56/84'},
+{d:'Cortador de frios AXT 30I',v:8790,p:'3 boletos 28/56/84'},
+{d:'Amassadeira MBI25',v:6263,p:'28/56/84'},
+{d:'Processador PA7',v:5691,p:'7x boleto'},
+{d:'Impressoras térmicas (6 un.)',v:3354,p:'3x boleto'},
+{d:'Bebedouro 25L',v:2500,p:'3x boleto'},
+{d:'Aquecedor de frituras',v:2490,p:'Sinal + 2 OP ⚠ validar'},
+{d:'Balança UR 10000',v:1891.25,p:'28/56/84'},
+{d:'Fogão 6 bocas',v:1690,p:'7x boleto'},
+{d:'Extrator de suco ESB Super N',v:1429,p:'7x boleto'},
+{d:'Liquidificadores 1,5L (2 un.)',v:1240,p:'7x boleto'},
+{d:'❗ Construnox revisado (fora do total-base da planilha)',v:30144,st:'pend',p:'5x boleto'}]},
+{t:'Insumos Iniciais',i:'🛒',c:'#D97706',tot:50000,pg:1,r:[{d:'Primeira compra da loja — insumos',v:50000,p:'2x R$ 25.000 boleto'}]}],
+notes:[{c:'#6D28D9',t:'📄 <strong>Atualizado pela Planilha de Formas de Pagamento (ago/26):</strong> Obra R$ 238.119,00 (pacote vidro/forro/pintura de R$ 51.678 agora aberto: Casa do Vidro R$ 24.500 + Topline R$ 19.518 + mão de obra R$ 5.000 + tinta R$ 2.660) + Equipamentos R$ 218.317,50 (agora itemizados; inclui insumos R$ 50.000) = R$ 456.436,50. Reforma de 80 cadeiras revisada de R$ 10.000 → R$ 10.800.'},
+{c:'#D63B3B',t:'⚠️ <strong>Construnox (R$ 30.144):</strong> segue FORA do total na planilha (mesma situação do Casoni antes da inclusão) — não somado aqui. Confirmar com Ivan se deve entrar, como foi feito no Casoni.'},
+{c:'#3B6FD6',t:'⚠️ <strong>Validar com Ivan:</strong> Casa do Vidro sem condição consolidada; Satélite (entrada é 50%?); Aquecedor/Fritadeira (condição conjunta R$ 15.640).'}]},
+milano:{name:'Biggs Pizza e Massa Milano',date:'—',type:'Abertura',color:'#DB2777',total:154258.25,meta:'Rua Mangaba – Interlagos · Planilha de Pagamentos (set/26) · CAPEX: R$ 154 mil',
+cats:[{n:'Serviços',v:82270,c:'#DB2777'},{n:'Equipamentos',v:71988.25,c:'#3B6FD6'}],
+secs:[
+{t:'Serviços',i:'🏗',c:'#DB2777',tot:82270,pg:1,r:[
+{d:'Comunicação visual — Bcaldi',v:27190,p:'5x R$ 5.438 (PIX/boleto não especificado)'},
+{d:'Mobiliário — Della Bruna',v:21730,p:'30% ent. + 5 parcelas'},
+{d:'Som — Som 13',v:9000,st:'est',p:'⚠ estimado · condição a definir'},
+{d:'Balcão do caixa — Dedique Planejados',v:7460,p:'50% ent. PIX + saldo em até 4x'},
+{d:'Câmeras e rede — Satélite (5 câmeras, 6 pontos, interfone, rack)',v:6800,p:'Entrada + 1x PIX'},
+{d:'Elétrica MO — Emerson',v:5500,p:'1 ent. + saldo no final da obra'},
+{d:'Material elétrico — Eletrocondoluz',v:1540,p:'4x boleto'},
+{d:'Pintura da fachada — Herculano',v:1500,p:'15/15'},
+{d:'Recorte/reforço de parede — Top Line',v:850,p:'PIX 15 dias'},
+{d:'Material de pintura (fachada) — Bonfin',v:700,p:'3x boleto'}]},
+{t:'Equipamentos',i:'⚙️',c:'#3B6FD6',tot:71988.25,pg:1,r:[
+{d:'Conservador VF55FT tripla ação (freezer estoque) — Loja 1200',v:17517,p:'⚠ a definir'},
+{d:'Construnox — inox (revisado)',v:15125,p:'5x boleto'},
+{d:'Prolar — equipamentos',v:10000,p:'7x boleto'},
+{d:'Câmara comercial inox 4 portas 700 L — Prolar',v:6999,p:'5x boleto Prolar'},
+{d:'Amassadeira semi rápida MBI25',v:6263,p:'28/56/84'},
+{d:'Processador de alimentos PA7',v:5691,p:'7x boleto'},
+{d:'Impressoras térmicas — Mercado Livre',v:3354,p:'⚠ a definir · qtd divergente (7 vs 6)'},
+{d:'Balança UR 10000',v:1891.25,p:'28/56/84'},
+{d:'Fogão 6 bocas A.P. 30/30 — Prolar',v:1590,p:'5x boleto Prolar'},
+{d:'Liquidificador AR 1,5 L inox',v:1240,p:'7x boleto'},
+{d:'Extrator de suco ESB Super N',v:1200,p:'7x boleto'},
+{d:'Cadeiras executivas c/ apoio (2 un.) — Dicomac',v:1118,p:'À vista'},
+{d:'Forno — transferência do Galileu ZS',v:0,p:'🔁 transferência, sem custo'},
+{d:'Abre pizza — transferência do Galileu ZS',v:0,p:'🔁 transferência, sem custo'}]}],
+notes:[{c:'#DB2777',t:'🎯 <strong>Entrou na lista CAPEX (21/09) como "Mangaba – Interlagos": R$ 154.000</strong> ≈ total da planilha R$ 154.258,25 (Serviços R$ 82.270 + Equipamentos R$ 71.988,25).'},
+{c:'#D97706',t:'⚠️ <strong>R$ 33.601 sem condição fechada:</strong> Som 13 (R$ 9.000, estimado), Conservador VF55FT (R$ 17.517), Impressoras (R$ 3.354, qtd 7 vs 6) e saldo do balcão Dedique (4x a definir). Programado na planilha: R$ 120.657,25.'},
+{c:'#3B6FD6',t:'🔁 <strong>Forno e abre pizza vêm do Galileu ZS por transferência</strong> — sem custo novo neste orçamento.'}]},
+noe:{name:'Noé Churrascaria',date:'—',type:'Abertura',color:'#0D9488',total:589299.50,meta:'Resumo Executivo Ivan Neves · CC: ML Consultoria',
+cats:[{n:'Estrutura da Unidade',v:296080,c:'#D63B3B'},{n:'Equipamentos',v:233219.50,c:'#3B6FD6'},{n:'Insumos Iniciais',v:50000,c:'#D97706'},{n:'Marketing Inauguração',v:10000,c:'#E8650A'}],
+secs:[{t:'Investimentos da Estrutura da Unidade',i:'🏗',c:'#D63B3B',tot:296080,r:[{d:'Mobiliário Della Bruna',v:130000},{d:'Climatizadores Europa (4 un.)',v:46000},{d:'Móveis Mix Mobília',v:30080},{d:'Comunicação Visual – BCaldi',v:30000},{d:'Câmeras e Rede – Satélite',v:22000},{d:'Paisagismo Indoor',v:20000},{d:'Automação de Som – Elegance',v:18000},{d:'❗ Ar Doce (fora do subtotal do resumo)',v:7425,st:'pend'}]},{t:'Equipamentos e Implantação',i:'⚙️',c:'#3B6FD6',tot:293219.50,r:[{d:'Equip. de cozinha, refrigeração, buffet e impressoras (por diferença do subtotal)',v:123219.50,st:'est'},{d:'Estimativa Construnox',v:55000,st:'est'},{d:'Estimativa Prolar',v:30000,st:'est'},{d:'Aparador de Buffet',v:25000},{d:'Primeiro Estoque de Insumos',v:50000},{d:'Marketing de Inauguração (estimado)',v:10000,st:'est'}]}],notes:[{c:'#0D9488',t:'📄 <strong>Novo projeto orçado</strong> conforme Resumo Executivo do Ivan (ago/26). Subtotais do resumo: Estrutura R$ 296.080,00 + Equipamentos/Implantação R$ 293.219,50.'},{c:'#D63B3B',t:'⚠️ <strong>Ar Doce (R$ 7.425):</strong> consta na lista da estrutura, mas NÃO integra o subtotal de R$ 296.080 informado — não somado ao total. Confirmar com Ivan.'},{c:'#3B6FD6',t:'ℹ️ <strong>Equip. cozinha/refrigeração/buffet/impressoras:</strong> resumo não abre valor por item — R$ 123.219,50 calculado por diferença do subtotal.'}]}
+};
+const F=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});const FD=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const DOSSIE_TXT=`🥩 *DOSSIÊ SUNSET — Reunião Sr. Antônio* (21/09/26)
+
+💰 *O QUE PRECISO PARA ABRIR NO MALL*
+• Sunset Churrascaria: *R$ 1.328.000*
+• Farmelhor: *R$ 736.000*
+• Total Sunset Mall: *R$ 2.064.000*
+(CAPEX total das obras do grupo: R$ 5.490.000)
+
+📜 *CONTRATO DO MALL (supermercado)*
+• Assinado em *14/11/2023* — obra 100% por conta da locadora
+• Promessa verbal de entrega: 1 ano → *~22 meses e nada entregue* (nosso cronograma foi remanejado por isso)
+• Prazo: 5 anos a contar da entrega · Aluguel R$ 25 mil → R$ 35 mil
+• Adiantamento de *R$ 120.000*: o contrato PREVÊ (pág. 2, cláusula do aluguel inicial — 1ª parcela em 13/01/24, abatível nos 60 meses de aluguel). *Não localizei o histórico desse pagamento* — estou verificando se encontro o comprovante. ❓ Perguntar ao Sr. Antônio: esse valor chegou a ser pago? Se foi pago e a operação não andar, *pedir a devolução*
+• ⚠ Garantia adicional (R$ 10 mil? R$ 25 mil? em quantas parcelas?): *não tenho registro/histórico* — verificando no financeiro. ❓ Confirmar com o Sr. Antônio se houve, quanto foi e como compensa
+
+🧾 *O QUE JÁ GASTEI NA OBRA (Matuza)*
+• Pago: *R$ 86.384,81*
+• Já comprometido (parcelas até mar/27): *R$ 160.547,59*
+⚠ LOGG (iluminação) aparece *lançada 2×* no financeiro — duas séries iguais de 3× R$ 4.246,81 (R$ 25.480,90 no total). *Não tenho histórico que confirme a segunda série* — verificando se aconteceu mesmo ou se é duplicidade. ❓ Se for duplicada, o comprometido cai para *R$ 147.807,14*
+• Σ Obra: *R$ 246.932,40*
+📐 Projeto: 2.111 m² × R$ 66 = *R$ 139.326* (confirmar metragem c/ Ivan)
+
+🏞 *OS 3 TERRENOS (Sunset Dream)*
+Contratos QA/QB assinados em *14/11/2023* · Escritura L19 em 13/11/2024
+🟢 Pago: *R$ 699.975* (L19 350k · QA 165k · QB 185k)
+🔴 Em atraso: *R$ 108.011* — só os 2 balões de 14/04/26 (R$ 54.005,49 cada, QA e QB)
+🟣 A vencer (01/10/26 →): *R$ 2.206.608* (L19 825k · QA 662k · QB 720k)
+📍 Parcelas: L19 na 25ª/92 · QA e QB na 030/100
+
+❓ *O QUE QUERO SAIR SABENDO*
+• Data firme de entrega do Mall
+• Devolução/compensação do adiantamento + garantia
+• Negociação dos balões atrasados e condições dos terrenos
+• Simulações de parcelamento eu mando à parte`;
+function dossieCopy(){const done=()=>{const t=document.getElementById('toast');if(t){t.textContent='📋 Roteiro copiado — é só colar no WhatsApp!';t.style.display='block';setTimeout(()=>t.style.display='none',2200);}else alert('Roteiro copiado!');};
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(DOSSIE_TXT).then(done).catch(()=>{fallbackCopy();done();});}else{fallbackCopy();done();}
+function fallbackCopy(){const ta=document.createElement('textarea');ta.value=DOSSIE_TXT;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();}}
+const DOSSIE_EXTRATO={pagos:[
+['PISO DA COZINHA',6294.63,'ENTRADA','14/07/2026','Cerâmica Atlas Ltda. — Compra do piso da cozinha.'],
+['PISO DA COZINHA',6123.20,'1/2','06/08/2026','Cerâmica Atlas Ltda. — Compra do piso da cozinha.'],
+['PISO DA COZINHA',6125.03,'2/2','03/09/2026','Cerâmica Atlas Ltda. — Compra do piso da cozinha.'],
+['FRETE',880.00,'ÚNICO','10/07/2026','BTR Logística e Transportes — frete de entrega do piso da cozinha da obra Matuza Sunset Mall.'],
+['REVESTIMENTO',2657.44,'ÚNICO','16/07/2026','HF Urbanismo — diferença do piso do empreendimento, conforme alinhamento entre as partes.'],
+['PAISAGISMO',5049.43,'1/4','11/08/2026','Indoor Paisagismo (Sheedy Tomas Jaouiche Ltda., CNPJ 36.140.114/0001-84) — fornecimento e plantio das árvores externas · NF 001854.'],
+['PAISAGISMO',5046.75,'2/4','10/09/2026','Indoor Paisagismo — fornecimento e plantio das árvores externas · NF 001854.'],
+['REDE E CFTV — MO',6300.00,'ENTRADA','19/08/2026','JK Telecom e Serviços Elétricos — entrada da mão de obra de rede e CFTV (PIX).'],
+['REDE E CFTV — SALDO MO',2925.00,'1/4','19/09/2026','JK Telecom — saldo da MO de infraestrutura de rede e CFTV: instalação, passagem e organização de cabos, pontos e testes.'],
+['CLIMATIZADORES COZINHA',10000.00,'ENTRADA','28/08/2026','Rofer Ventilação Industrial — 02 climatizadores evaporativos KS23 (23.000 m³/h) instalados na cozinha.'],
+['CLIMATIZAÇÃO SALÃO/ADM/KIDS',10000.00,'1/7','26/08/2026','Superar Refrigerações — instalação e infraestrutura p/ 12 cassetes + 3 splits, tubulação, drenagem, fixação e ramal.'],
+['CLIMATIZAÇÃO SALÃO/ADM/KIDS',10000.00,'2/7','02/09/2026','Superar Refrigerações — instalação e infraestrutura de climatização.'],
+['TESTEIRA METÁLICA',6500.00,'ENTRADA','26/08/2026','Rovano (Mario Caetano Neto e Cia) — entrada contratual da testeira em estrutura metálica.'],
+['CABEAMENTO DO SOM',2925.15,'ENTRADA','27/08/2026','Zanin Tecnologia e Serviços — cabeamento da instalação do sistema de som.'],
+['MATERIAL REDE/CFTV',1311.37,'ÚNICO','21/09/2026','Multcabos — material utilizado na infraestrutura de rede e câmeras/CFTV.'],
+['ILUMINAÇÃO — ENTRADA',4246.81,'ENTRADA','16/09/2026','LOGG (Ehlo Design) — materiais de iluminação da praça e salões: projetores LED, perfis lineares, fitas de LED e drivers.']],
+fut:[
+['PAISAGISMO',5046.75,'3/4','10/10/2026','Indoor Paisagismo — plantio das árvores externas · NF 001854.'],
+['PAISAGISMO',5046.75,'4/4','10/11/2026','Indoor Paisagismo — plantio das árvores externas · NF 001854.'],
+['REDE E CFTV — SALDO MO',2925.00,'2/4','19/10/2026','JK Telecom — saldo da MO de rede e CFTV (boleto).'],
+['REDE E CFTV — SALDO MO',2925.00,'3/4','19/11/2026','JK Telecom — saldo da MO de rede e CFTV (boleto).'],
+['REDE E CFTV — SALDO MO',2925.00,'4/4','19/12/2026','JK Telecom — saldo da MO de rede e CFTV (boleto).'],
+['CLIMATIZADORES COZINHA',3400.00,'1/4','28/09/2026','Rofer — saldo dos 02 climatizadores KS23.'],
+['CLIMATIZADORES COZINHA',3400.00,'2/4','28/10/2026','Rofer — saldo dos 02 climatizadores KS23.'],
+['CLIMATIZADORES COZINHA',3400.00,'3/4','28/11/2026','Rofer — saldo dos 02 climatizadores KS23.'],
+['CLIMATIZADORES COZINHA',3400.00,'4/4','28/12/2026','Rofer — saldo dos 02 climatizadores KS23.'],
+['CLIMATIZAÇÃO SALÃO/ADM/KIDS',10000.00,'3/7','25/09/2026','Superar Refrigerações — instalação e infraestrutura de climatização (PIX).'],
+['CLIMATIZAÇÃO SALÃO/ADM/KIDS',8925.00,'4/7','09/10/2026','Superar Refrigerações — boleto.'],
+['CLIMATIZAÇÃO SALÃO/ADM/KIDS',8925.00,'5/7','09/11/2026','Superar Refrigerações — boleto.'],
+['CLIMATIZAÇÃO SALÃO/ADM/KIDS',8925.00,'6/7','09/12/2026','Superar Refrigerações — boleto.'],
+['CLIMATIZAÇÃO SALÃO/ADM/KIDS',8925.00,'7/7','09/01/2027','Superar Refrigerações — boleto.'],
+['CABEAMENTO DO SOM',5850.30,'2/2','26/09/2026','Cabeamento da instalação do sistema de som.'],
+['TESTEIRA METÁLICA',6500.00,'ÚNICO','25/09/2026','Rovano Sistemas Construtivos — testeira em estrutura metálica, MO e materiais, conforme contrato.'],
+['TESTEIRA METÁLICA',6500.00,'ÚNICO','25/10/2026','Rovano — testeira em estrutura metálica.'],
+['TESTEIRA METÁLICA',6500.00,'ÚNICO','25/11/2026','Rovano — testeira em estrutura metálica.'],
+['TESTEIRA METÁLICA',6500.00,'ÚNICO','25/12/2026','Rovano — testeira em estrutura metálica.'],
+['TESTEIRA METÁLICA',6500.00,'ÚNICO','25/01/2027','Rovano — testeira em estrutura metálica.'],
+['TESTEIRA METÁLICA',6500.00,'ÚNICO','25/02/2027','Rovano — testeira em estrutura metálica.'],
+['TESTEIRA METÁLICA',6500.00,'ÚNICO','25/03/2027','Rovano — testeira em estrutura metálica.'],
+['CABEAMENTO DO SOM',2925.15,'ÚNICO','26/09/2026','Zanin Tecnologia e Serviços — cabeamento do sistema de som.'],
+['MATERIAL REDE/CFTV',1311.37,'ÚNICO','21/10/2026','Multcabos — material da infraestrutura de rede e CFTV.'],
+['MATERIAL REDE/CFTV',1311.37,'ÚNICO','21/11/2026','Multcabos — material da infraestrutura de rede e CFTV.'],
+['ILUMINAÇÃO — SÉRIE A',4246.81,'1/3','14/10/2026','LOGG (PIX financeiro@ehlodesign.com.br) — materiais de iluminação da praça e salões: projetores LED, perfis, fitas e drivers.'],
+['ILUMINAÇÃO — SÉRIE A',4246.81,'2/3','14/11/2026','LOGG — materiais de iluminação.'],
+['ILUMINAÇÃO — SÉRIE A',4246.83,'3/3','14/12/2026','LOGG — materiais de iluminação.'],
+['ILUMINAÇÃO — SÉRIE B ⚠',4246.81,'1/3','14/10/2026','LOGG — aquisição dos materiais de iluminação conforme projeto/orçamento aprovado. ⚠ POSSÍVEL DUPLICIDADE da série A — sem histórico que confirme; verificar antes de pagar.'],
+['ILUMINAÇÃO — SÉRIE B ⚠',4246.81,'2/3','14/10/2026','LOGG — ⚠ possível duplicidade — verificar.'],
+['ILUMINAÇÃO — SÉRIE B ⚠',4246.83,'3/3','14/10/2026','LOGG — ⚠ possível duplicidade — verificar.']]};
+function dsStrip(t){return String(t||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();}
+function dsToast(m){const t=document.getElementById('toast');if(t){t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2000);}}
+function dsSave(buf,fname){const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);}
+function dossieOrc(k){const d=D[k];if(!d){alert('Este projeto ainda não tem orçamento detalhado — está como estimativa.');return;}
+if(window.ExcelJS){dossieOrcX(d).then(()=>dsToast('📥 Orçamento baixado!')).catch(e=>{console.error(e);dossieOrcS(d);});return;}
+if(window.XLSX){dossieOrcS(d);return;}
+alert('O Excel precisa de internet (a biblioteca carrega online). Sem conexão, use o PDF.');}
+async function dossieOrcX(d){
+const strip=dsStrip;
+const wb=new ExcelJS.Workbook();const ws=wb.addWorksheet('Orçamento',{views:[{state:'frozen',ySplit:5}]});
+ws.columns=[{width:34},{width:58},{width:6},{width:16},{width:38},{width:16}];
+const PURP='FF2D204E',BR='FF7B4FBF',LIL='FFF1EDFA',WHT='FFFFFFFF',AMB='FFFFF8EC';
+const fill=c=>({type:'pattern',pattern:'solid',fgColor:{argb:c}});
+const thin={style:'thin',color:{argb:'FFD8D2E8'}};
+const box={top:thin,left:thin,bottom:thin,right:thin};
+ws.mergeCells(1,1,1,6);const t1=ws.getCell(1,1);t1.value=strip(d.name)+' — Orçamento completo';t1.fill=fill(PURP);t1.font={bold:true,size:13,color:{argb:WHT}};t1.alignment={vertical:'middle'};ws.getRow(1).height=26;
+ws.mergeCells(2,1,2,6);const t2=ws.getCell(2,1);t2.value=strip(d.meta||'');t2.font={italic:true,size:9,color:{argb:'FF8B84A0'}};
+ws.mergeCells(3,1,3,3);const t3=ws.getCell(3,1);t3.value='TOTAL DO PROJETO';t3.font={bold:true,size:11,color:{argb:'FF2D204E'}};
+const tv=ws.getCell(3,4);tv.value=d.total;tv.numFmt='#,##0.00';tv.font={bold:true,size:12,color:{argb:'FF2D204E'}};tv.alignment={horizontal:'right'};
+ws.mergeCells(3,5,3,6);
+for(let i=1;i<=6;i++){ws.getCell(3,i).fill=fill(LIL);ws.getCell(3,i).border=box;}
+const hr=ws.getRow(5);['Seção','Item','Qtd','Valor (R$)','Pagamento','Status'].forEach((h,i)=>{const c=hr.getCell(i+1);c.value=h;c.fill=fill(BR);c.font={bold:true,color:{argb:WHT},size:10};c.border=box;});
+let r=6;
+(d.secs||[]).forEach(sc=>{let first=true;
+(sc.r||[]).forEach(rw=>{const row=ws.getRow(r);
+const c1=row.getCell(1);c1.value=first?sc.t:'';c1.font={bold:true,size:9,color:{argb:'FF7B4FBF'}};first=false;
+const c2=row.getCell(2);c2.value=rw.d;c2.font={size:9};c2.alignment={wrapText:true,vertical:'top'};
+row.getCell(3).value=rw.qty||'';
+if(rw.v!=null){const c4=row.getCell(4);c4.value=rw.v;c4.numFmt='#,##0.00';c4.alignment={horizontal:'right'};c4.font={size:9.5};}
+const c5=row.getCell(5);c5.value=rw.p||'';c5.font={size:8.5,color:{argb:'FF6B6480'}};c5.alignment={wrapText:true,vertical:'top'};
+const st=rw.st==='pend'?'FORA DO TOTAL':(rw.st==='est'?'Estimado':(rw.st==='pago'?'PAGO':''));
+const c6=row.getCell(6);c6.value=st;
+if(st==='PAGO')c6.font={bold:true,size:9,color:{argb:'FF1A9F4A'}};
+else if(st==='Estimado')c6.font={bold:true,size:9,color:{argb:'FFC77700'}};
+else if(st==='FORA DO TOTAL')c6.font={bold:true,size:9,color:{argb:'FFD63B3B'}};
+for(let i=1;i<=6;i++)row.getCell(i).border=box;
+r++;});
+ws.mergeCells(r,1,r,3);const srow=ws.getRow(r);
+srow.getCell(1).value='Σ Subtotal — '+sc.t;srow.getCell(1).font={bold:true,size:9.5,color:{argb:'FF2D204E'}};
+const sv=srow.getCell(4);sv.value=(sc.tot!=null?sc.tot:0);sv.numFmt='#,##0.00';sv.font={bold:true,size:10};sv.alignment={horizontal:'right'};
+for(let i=1;i<=6;i++){srow.getCell(i).fill=fill(LIL);srow.getCell(i).border=box;}
+r+=2;});
+ws.mergeCells(r,1,r,3);const frow=ws.getRow(r);
+frow.getCell(1).value='💰 TOTAL DO PROJETO';frow.getCell(1).font={bold:true,size:11,color:{argb:WHT}};
+const fv=frow.getCell(4);fv.value=d.total;fv.numFmt='#,##0.00';fv.font={bold:true,size:12,color:{argb:WHT}};fv.alignment={horizontal:'right'};
+for(let i=1;i<=6;i++)frow.getCell(i).fill=fill(PURP);
+frow.height=22;r+=2;
+if(d.notes&&d.notes.length){ws.getCell(r,1).value='Observações';ws.getCell(r,1).font={bold:true,size:10,color:{argb:'FF2D204E'}};r++;
+d.notes.forEach(n=>{ws.mergeCells(r,1,r,6);const c=ws.getCell(r,1);c.value='• '+strip(n.t);c.font={size:8.5,color:{argb:'FF6B6480'}};c.alignment={wrapText:true};c.fill=fill(AMB);r++;});}
+const nm=strip(d.name).replace(/[^\wÀ-ú ]/g,'').trim().replace(/\s+/g,'_').slice(0,40);
+const buf=await wb.xlsx.writeBuffer();
+dsSave(buf,'Orcamento_'+nm+'_20260921.xlsx');}
+function dossieOrcS(d){
+const strip=dsStrip;
+const a=[[strip(d.name)+' — Orçamento completo'],[strip(d.meta||'')],['Total do projeto','','',d.total],[],['Seção','Item','Qtd','Valor (R$)','Pagamento','Status']];
+(d.secs||[]).forEach(sc=>{(sc.r||[]).forEach(rw=>{a.push([sc.t,rw.d,rw.qty||'',(rw.v!=null?rw.v:''),rw.p||'',rw.st==='pend'?'FORA DO TOTAL':(rw.st==='est'?'Estimado':(rw.st==='pago'?'PAGO':''))]);});
+a.push(['» Subtotal '+sc.t,'','',(sc.tot!=null?sc.tot:0),'','']);});
+a.push([]);a.push(['TOTAL DO PROJETO','','',d.total,'','']);
+if(d.notes&&d.notes.length){a.push([]);a.push(['Observações']);d.notes.forEach(n=>a.push([strip(n.t)]));}
+const wb=XLSX.utils.book_new();const ws=XLSX.utils.aoa_to_sheet(a);
+ws['!cols']=[{wch:36},{wch:62},{wch:6},{wch:15},{wch:38},{wch:14}];
+(function(w){const R=XLSX.utils.decode_range(w['!ref']);for(let r=R.s.r;r<=R.e.r;r++){const c=XLSX.utils.encode_cell({r:r,c:3});if(w[c]&&w[c].t==='n')w[c].z='#,##0.00';}})(ws);
+XLSX.utils.book_append_sheet(wb,ws,'Orçamento');
+const nm=strip(d.name).replace(/[^\wÀ-ú ]/g,'').trim().replace(/\s+/g,'_').slice(0,40);
+XLSX.writeFile(wb,'Orcamento_'+nm+'_20260921.xlsx');
+dsToast('📥 Orçamento baixado!');}
+function dossieExtrato(){
+if(window.ExcelJS){dossieExtratoX().then(()=>dsToast('📎 Extrato baixado!')).catch(e=>{console.error(e);dossieExtratoS();});return;}
+if(window.XLSX){dossieExtratoS();return;}
+alert('O extrato em Excel precisa de internet (a biblioteca carrega online). Use o PDF/print como alternativa.');}
+async function dossieExtratoX(){
+const wb=new ExcelJS.Workbook();const ws=wb.addWorksheet('Extrato Sunset Mall',{views:[{state:'frozen',ySplit:3}]});
+ws.columns=[{width:21},{width:9},{width:14},{width:26},{width:13},{width:9},{width:12},{width:12},{width:11},{width:6},{width:10},{width:95}];
+const PURP='FF2D204E',BR='FF7B4FBF',LIL='FFF1EDFA',WHT='FFFFFFFF';
+const fill=c=>({type:'pattern',pattern:'solid',fgColor:{argb:c}});
+const thin={style:'thin',color:{argb:'FFD8D2E8'}};const box={top:thin,left:thin,bottom:thin,right:thin};
+ws.mergeCells(1,1,1,12);const t1=ws.getCell(1,1);t1.value='EXTRATO — OBRA MATUZA · SUNSET MALL (contas a pagar · 21/09/2026)';t1.fill=fill(PURP);t1.font={bold:true,size:12,color:{argb:WHT}};ws.getRow(1).height=24;
+const H=['FORNECEDOR','GRUPO','CENTRO DE CUSTO','DETALHAMENTO','VALOR','PARCELA','VENCIMENTO','DATA DE PGT','SITUAÇÃO','TIPO','FLUXO','DESCRIÇÃO'];
+const hr=ws.getRow(3);H.forEach((h,i)=>{const c=hr.getCell(i+1);c.value=h;c.fill=fill(BR);c.font={bold:true,size:9,color:{argb:WHT}};c.border=box;});
+let r=4;
+const put=(row,st)=>{const rr=ws.getRow(r);
+const vals=['SUNSET MALL - MATUZA','MARLAY','EXPANSÃO',row[0],row[1],row[2],row[3],st==='PAGO'?row[3]:'',st,st==='PAGO'?'OK':'','VARIAVEL',row[4]];
+vals.forEach((v,i)=>{const c=rr.getCell(i+1);c.value=v;c.border=box;c.font={size:8.5};
+if(i===4){c.numFmt='#,##0.00';c.alignment={horizontal:'right'};c.font={size:9,bold:true};}
+if(i===11){c.font={size:8,color:{argb:'FF6B6480'}};c.alignment={wrapText:true,vertical:'top'};}
+if(i===8){c.font={bold:true,size:8.5,color:{argb:st==='PAGO'?'FF1A9F4A':'FFC77700'}};}});
+if(String(row[0]).indexOf('⚠')>-1){for(let i=1;i<=12;i++)rr.getCell(i).fill=fill('FFFFF3C4');}
+r++;};
+DOSSIE_EXTRATO.pagos.forEach(row=>put(row,'PAGO'));
+DOSSIE_EXTRATO.fut.forEach(row=>put(row,'A VENCER'));
+const sp=DOSSIE_EXTRATO.pagos.reduce((a,x)=>a+x[1],0),sf2=DOSSIE_EXTRATO.fut.reduce((a,x)=>a+x[1],0);
+r++;
+const tot=(lb,v,dark)=>{ws.mergeCells(r,1,r,4);const rr=ws.getRow(r);
+rr.getCell(1).value=lb;rr.getCell(1).font={bold:true,size:10,color:{argb:dark?WHT:'FF2D204E'}};
+const c=rr.getCell(5);c.value=Math.round(v*100)/100;c.numFmt='#,##0.00';c.alignment={horizontal:'right'};c.font={bold:true,size:11,color:{argb:dark?WHT:'FF2D204E'}};
+for(let i=1;i<=12;i++){rr.getCell(i).fill=fill(dark?PURP:LIL);}
+if(dark)rr.height=20;r++;};
+tot('✅ VALOR PAGO',sp,false);
+tot('💳 A PAGAR (DIFERENÇA — DEMAIS PARCELAS)',sf2,false);
+tot('Σ VALOR TOTAL COMPROMETIDO NA OBRA',sp+sf2,true);
+const buf=await wb.xlsx.writeBuffer();
+dsSave(buf,'Extrato_Obra_Matuza_SunsetMall_20260921.xlsx');}
+function dossieExtratoS(){
+const H=['FORNECEDOR','GRUPO','CENTRO DE CUSTO','DETALHAMENTO','VALOR','PARCELA','VENCIMENTO','DATA DE PGT','SITUAÇÃO','TIPO','FLUXO','DESCRIÇÃO'];
+const mk=(r,st)=>['SUNSET MALL - MATUZA','MARLAY','EXPANSÃO',r[0],r[1],r[2],r[3],st==='PAGO'?r[3]:'',st,st==='PAGO'?'OK':'','VARIAVEL',r[4]];
+const aoa=[['EXTRATO — OBRA MATUZA · SUNSET MALL (contas a pagar · 21/09/2026)'],[],H];
+DOSSIE_EXTRATO.pagos.forEach(r=>aoa.push(mk(r,'PAGO')));
+DOSSIE_EXTRATO.fut.forEach(r=>aoa.push(mk(r,'A VENCER')));
+const sp=DOSSIE_EXTRATO.pagos.reduce((a,r)=>a+r[1],0),sf2=DOSSIE_EXTRATO.fut.reduce((a,r)=>a+r[1],0);
+aoa.push([]);aoa.push(['','','','✅ VALOR PAGO',Math.round(sp*100)/100]);aoa.push(['','','','💳 A PAGAR (DIFERENÇA)',Math.round(sf2*100)/100]);aoa.push(['','','','Σ VALOR TOTAL COMPROMETIDO',Math.round((sp+sf2)*100)/100]);
+const wb=XLSX.utils.book_new();const ws=XLSX.utils.aoa_to_sheet(aoa);
+ws['!cols']=[{wch:21},{wch:9},{wch:14},{wch:26},{wch:12},{wch:9},{wch:12},{wch:12},{wch:10},{wch:6},{wch:10},{wch:100}];
+(function(w){const R=XLSX.utils.decode_range(w['!ref']);for(let r=R.s.r;r<=R.e.r;r++){const c=XLSX.utils.encode_cell({r:r,c:4});if(w[c]&&w[c].t==='n')w[c].z='#,##0.00';}})(ws);
+XLSX.utils.book_append_sheet(wb,ws,'Extrato Sunset Mall');
+XLSX.writeFile(wb,'Extrato_Obra_Matuza_SunsetMall_20260921.xlsx');
+dsToast('📎 Extrato baixado!');}
+</script></body></html>
